@@ -1,9 +1,10 @@
 
-name: Node.js CI
+name: Deploy Page
 on:
   push:
     branches:
-      - master
+    - master
+    - gh-pages
 
 jobs:
   build-test-deploy:
