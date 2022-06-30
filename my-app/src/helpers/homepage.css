@@ -1,0 +1,25 @@
+.homepage{
+    /* background-color: aqua; */
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+.homepage h2{
+    text-align: center;
+    font-size: xx-large;
+    padding: 2%;
+}
+.homepage h3{
+    font-size: x-large;
+}
+.homepage section{
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 5%;
+}
+.homepage section>p{
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 2%;
+    font-size: large;
+}

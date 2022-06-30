@@ -1,0 +1,14 @@
+.graph{
+    /* background-color: black; */
+    width: 100%;
+    border: 1px solid;
+    border-color: black;
+    margin: 5% 5% 5% 5%;
+}
+.grapher{
+    width: 90%;
+    margin: 5% 5% 5% 5%;
+    display:grid;
+    justify-content: center;
+    text-align: center;
+}

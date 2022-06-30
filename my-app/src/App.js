@@ -1,52 +1,19 @@
-import logo from './logo.svg';
 import './App.css';
-import Receiver from './reciever';
-import Grapher from './grapher';
 import React from 'react';
-import { TemporaryCredentials } from 'aws-sdk';
-class App extends React.Component{
-  constructor(props){
-    super(props)
-    this.state = {
-      Receiver : new Receiver("Testing"),
-      data : [],
-    }
-  }
-  render(){
-  
-  return (
-    <div className="App">
-      <button onClick={() => {
-        this.state.Receiver.update().then(()=>{
-          console.log(this.state.Receiver.CWAData, typeof(this.state.Receiver.CWAData))
-          // var temp = {}
-          // this.state.Receiver.CWAData.forEach((element)=>{
-          //   // var metrics = Object.keys(element)
-          //   // metrics.forEach((metricName)=>{
-          //   //   if(metricName == "Hash" || metricName == "Year" || metricName =="CommitDate"){
-          //   //     return
-          //   //   }
-          //   //   metricValues = element[metricName].M
-          //   //   temp[metricName] =  []
-          //   //   temp[metricName].push()
-              
-          //   // })
-          //   console.log(element)
-          //   return
-          // })
-          this.setState({data:this.state.Receiver.CWAData})
-        
-        })
-        }}> Fetch </button>
-      <button onClick={() => {
-        this.state.Receiver.cacheClear()
-        }}> Clear </button>
-      <p>{this.state.data.length}</p>
-      
-      {/* <Grapher data={this.state.data} metrics={["procstat_cpu_usage"]}/> */}
-      
+import {Outlet} from "react-router-dom"
 
-    </div>
+import Navbar from './helpers/navbar';
+class App extends React.Component{
+  render(){
+    return (
+      <div>
+        <Navbar/>
+        <Outlet />
+        <p style={{fontSize:"10px",textAlign:'center', bottom:"0px"}}>
+        <div>Icons made by <a href="https://www.flaticon.com/authors/srip" title="srip">srip</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div><div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div><div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        </p>
+      </div>
+
   );
   }
 }
