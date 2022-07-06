@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "homepage":"https://okankoamz.github.io/reactPages/",
+  "homepage": "https://okankoamz.github.io/reactPages/",
   "private": true,
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.113.0",
