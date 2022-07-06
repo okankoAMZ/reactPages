@@ -1,11 +1,14 @@
 import Page from "./page"
-import '../helpers/homepage.css'
-
+import './homepage.css'
+import Navbar from '../helpers/navbar';
+//@TODO Add interface
 export default class Home extends Page {
     render() {
         return (
             <div class="homepage">
+                <Navbar/>
                 <h2>HomePage</h2>
+                {/* @TODO: Add more text */}
                 <section>
                     <h3>About CWA Performance Tracking</h3>
                     <p>

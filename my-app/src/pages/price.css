@@ -1,0 +1,22 @@
+.Calculator{
+    text-align: center;
+    margin-left: 20%;
+    margin-right: 20%;
+    display: flexbox;
+}
+.Calculator select{
+    border-color: aqua;
+    width: 50%;
+    margin: 5%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    padding:2%;
+}
+.Calculator input{
+    border-color: aqua;
+    width: 45%;
+    margin: 5%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    padding:2%;
+}

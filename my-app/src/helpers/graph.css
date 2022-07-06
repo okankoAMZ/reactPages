@@ -6,9 +6,32 @@
     margin: 5% 5% 5% 5%;
 }
 .grapher{
-    width: 90%;
-    margin: 5% 5% 5% 5%;
+    width: 85%;
+    margin-top: 2%;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-bottom: 2%;
     display:grid;
     justify-content: center;
     text-align: center;
+}
+
+.GraphicsPage{
+    text-align: center;
+    justify-content: center;
+}
+.GraphicsPage .header{
+    margin: 5%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+.GraphicsPage h2{
+    text-align: center;
+}
+.GraphicsPage p{
+    text-align: left;
+    font-size: large;
+    margin: 15%;
+    margin-top: 2%;
+    margin-bottom: 2%;
 }

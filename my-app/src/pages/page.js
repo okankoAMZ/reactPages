@@ -1,11 +1,11 @@
 import React from 'react';
 import Receiver from "../helpers/reciever"
-
+//@TODO Add interface
 export default class Page extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-          Receiver : new Receiver("Testing"),
+          Receiver : new Receiver("CWAPerformanceMetrics"),
           data : [],
           mounted : false,
         }

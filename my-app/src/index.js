@@ -4,22 +4,21 @@ import './index.css';
 import App from './App';
 import GraphicsPage from './pages/graphics';
 import Home from "./pages/home"
-
-import { BrowserRouter,Route,Routes } from "react-router-dom";
+import TablePage from './pages/table'
+import PriceCalculatorPage from './pages/price'
+import { BrowserRouter,Route,Routes,Navigate } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+//@TODO add comments
+
 root.render(
-  // <React.StrictMode>
-  //   <App />
-  // </React.StrictMode>
-  
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<App/>}>
-        <Route path="home" element={<Home />}/>
-        <Route path="graphics" element={<GraphicsPage />}/>
-      </Route>
+      <Route path="/" element={<Home /> }/>
+      <Route path="/graphics" element={<GraphicsPage />}/>
+      <Route path="/table" element={<TablePage />}/>
+      <Route path="/price" element={<PriceCalculatorPage />}/>
     </Routes>
   </BrowserRouter>
 );

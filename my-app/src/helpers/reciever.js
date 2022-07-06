@@ -22,6 +22,7 @@ const METRIC_SIZE = 0.154 //KB per metric with no timestamps
 const PACKET_SIZE = (BASE_PACKET_SIZE + N_METRIC * (METRIC_SIZE + N_TIMESTAMPS * TIMESTAMP_SIZE))
 const BATCH_SIZE = parseInt(ONE_MB / PACKET_SIZE)
 //------------------------
+//This class handles the entire frontend from pulling to formatting data
 class Receiver {
   constructor(DataBaseName) {
     this.cacheClear()
