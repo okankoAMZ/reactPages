@@ -1,18 +1,32 @@
 import React from 'react';
 import Receiver from "../helpers/reciever"
-//@TODO Add interface
+//This is the base website page, all website components inherit this page.
+export const DEFAULT_CONFIG = {
+  "sigfig": 3,
+  "textFontSize":"16",
+  "graphFontSize":"16",
+  "tableFontSize":"15",
+  "showCommitDate": true,
+  "Thresholds":{},
+
+}
 export default class Page extends React.Component{
     constructor(props){
         super(props)
         this.state = {
           Receiver : new Receiver("CWAPerformanceMetrics"),
-          data : [],
+          data : [], //CWAdata
           mounted : false,
+          config: JSON.parse(localStorage.getItem("config")) || DEFAULT_CONFIG,
         }
       }
       componentDidMount(){
         console.log("mounted")
         if(!this.state.mounted){
+          // debugger;
+          if (localStorage.getItem("config")==null){
+            localStorage.setItem("config",JSON.stringify(this.state.config))
+          }
           this.state.Receiver.update().then(()=>{
             console.log(this.state.Receiver.CWAData, typeof(this.state.Receiver.CWAData))
             this.setState({data:this.state.Receiver.CWAData})

@@ -1,5 +1,4 @@
 import AWS from "aws-sdk"
-
 AWS.config.update({
   'region': 'us-west-2',
   'secretAccessKey': process.env.REACT_APP_API_KEY_SECRET,
@@ -25,7 +24,7 @@ const BATCH_SIZE = parseInt(ONE_MB / PACKET_SIZE)
 //This class handles the entire frontend from pulling to formatting data
 class Receiver {
   constructor(DataBaseName) {
-    this.cacheClear()
+    // this.cacheClear()
     this.dyanamoClient = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
     this.DataBaseName = DataBaseName
     this.CWAData = null
@@ -38,6 +37,7 @@ class Receiver {
   }
 
   //update
+  //@TODO Add interface
   async update() {
     console.log("updating")
     // check the latest hash from cache
@@ -47,7 +47,7 @@ class Receiver {
     let cacheLatestItem = this.cacheGetLatestItem()//["Hash"].S //rename to lastest hash
     let cacheLatestHash = ""
     if (cacheLatestItem == undefined) {
-      console.log("NO cache found")
+      console.log("NO cache found",localStorage.key(0),localStorage.key(1))
       // no cache found, pull every thing and set
       this.CWAData = await this.getAllItems()
       console.log(this.CWAData)
@@ -75,6 +75,7 @@ class Receiver {
   }
 
   //get latest item
+  //@TODO Add interface
   async getLatestItem() {
     //add secondary index 
     const params = {
@@ -99,6 +100,7 @@ class Receiver {
     // return this.latestItem
   }
   // get all
+  //@TODO Add interface
   async getAllItems() {
     const params = {
       // Set the projection expression, which are the attributes that you want.
@@ -122,6 +124,7 @@ class Receiver {
   /*
   lastHash : the last hash i have cached
   */
+ //@TODO Add interface
   async getBatchItem(cacheHashDate, dynamoHashDate) {
     console.log("Getting batch item", cacheHashDate, dynamoHashDate, cacheHashDate < dynamoHashDate)
     // will use scan because getBatchItem requires me to know both hash and 
@@ -165,9 +168,8 @@ class Receiver {
     var cleanData = this.formatData(retData)
     return cleanData
   }
+  //@TODO Add interface
   formatData(data) {
-    //@TODO make this more efficient
-    //assume it is a list
     var formattedData = {}
     data.forEach((item) => {
       var cleanData = AWS.DynamoDB.Converter.unmarshall(item)
@@ -191,6 +193,7 @@ class Receiver {
     return formattedData
 
   }
+  //@TODO Add interface
   cacheClear() {
     localStorage.clear()
   }
@@ -201,9 +204,13 @@ class Receiver {
     return JSON.parse(localStorage.getItem(LATEST_ITEM))
   }
   cacheSaveData() {
+    if(this.latestItem == null || this.CWAData == null){
+      console.warn("Items are null")
+      return
+    }
     localStorage.setItem(LATEST_ITEM, JSON.stringify(this.latestItem))
     localStorage.setItem(CWAData, JSON.stringify(this.CWAData))
-
+    // debugger;
     if (DEBUG) {
       console.log(` CACHE SAVE DATA: \n Latest: ${this.cacheGetLatestItem()}
         \nALL: ${localStorage.getItem(CWAData).length}

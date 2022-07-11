@@ -19,6 +19,7 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import "./table.css"
+import {IGNORE_ATTRIBUTES} from "./grapher"
 
 const MIN_COLOUR = 0x50
 function getRandomColour(idx){
@@ -29,7 +30,7 @@ function getRandomColour(idx){
   for(var i=0; i< colours.length; i++){
     stringColour+= colours[i].toString(16)
   }
-  console.log(stringColour)
+  // console.log(stringColour)
   return stringColour
 }
 function TablePaginationActions(props) {
@@ -111,6 +112,7 @@ function CreateRow(data) {
 }
 
 export function BasicTable(props) {
+    document.body.style.setProperty("--tablefontSize",parseInt(props.config.tableFontSize).toString()+"px")
     var metricNames = []
     var metricData = []
 
@@ -137,14 +139,22 @@ export function BasicTable(props) {
     
 
     for (var metric in props.data[0]){
-        if (metric == "Data" || metric == "Hash" || metric == "CommitDate" || metric == "Year") {
+        if (IGNORE_ATTRIBUTES.includes(metric)) {
             continue;
         }
         metricNames.push(<TableCell><b>{metric}</b></TableCell>)
     }
 
     for (let i = 0; i < props.data.length; i++) {
-        metricData.push(<TableRow style ={ i % 2 ? {background : "#dddddd" } : { background: "white" }}>{CreateRow(props.data[i])}</TableRow>)
+        var cleanData = props.data
+        for(let j  of  Object.keys(props.data[i])){
+          if (IGNORE_ATTRIBUTES.includes(j)) {
+            continue;
+          }
+          cleanData[i][j] = props.data[i][j].toPrecision(props.config.sigfig)
+        }
+
+        metricData.push(<TableRow style ={ i % 2 ? {background : "#dddddd" } : { background: "white" }}>{CreateRow(cleanData[i])}</TableRow>)
     }
 
     return(
@@ -171,7 +181,7 @@ export function BasicTable(props) {
                             </TableRow>
                         )}
                     </TableBody>
-                    <TableFooter>
+                    <TableFooter class="table_footer">
                         <TableRow>
                             <TablePagination
                             rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
@@ -206,7 +216,8 @@ export default function TableGroup(props){
     return
   }
   metrics.forEach(element => {
-      tables.push(<BasicTable data={props.data[element]} idx={j} title={element} />) // Add a graph
+      tables.push(<BasicTable data={props.data[element]} idx={j}
+         title={element}  config={props.config}/>) // Add a graph
       j++;
   })
   return (

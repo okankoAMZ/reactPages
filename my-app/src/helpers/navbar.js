@@ -2,15 +2,15 @@ import {Link} from "react-router-dom"
 import React from 'react';
 import "./nav.css"
 import {FaHome,FaTable,FaChartLine} from "react-icons/fa"
+import {AiFillSetting} from 'react-icons/ai'
 import logo from '../icons/inverselogo.png'
-//@TODO Add interface
+// This component handles navigation between page components.
 export default function Navbar(){
     return(
         <div class="navbar">
             <ul>
                 <li>
                     <img src={logo} class="logo"/>
-                    {/* @ASK: should I make this to a button */}
                 </li>
                 <li>
                     <Link to="/"><FaHome/>Home</Link>
@@ -20,6 +20,9 @@ export default function Navbar(){
                 </li>
                 <li>
                     <Link to="/graphics"><FaChartLine/>Graph</Link>
+                </li>
+                <li>
+                    <Link to="/settings"><AiFillSetting/>Settings</Link>
                 </li>
 
             </ul>

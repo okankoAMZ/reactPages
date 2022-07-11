@@ -4,7 +4,8 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ErrorBar
 import "./graph.css"
 
 const THRESHOLDS = {procstat_cpu_usage:0.47,procstat_memory_rss:70000000}
-const IGNORE_ATTRIBUTES = ["Data", "Hash", "Year", "CommitDate", "Period","Std"]
+export const IGNORE_ATTRIBUTES  = ["Data", "Hash", "Year", "CommitDate",]
+const IGNORE_ATTRIBUTES_GRAPH =  IGNORE_ATTRIBUTES + ["Period","Std"]
 const N_STATS = 4
 const MAX_COLOUR = 0xFF
 const MIN_COLOUR = 0x11
@@ -14,7 +15,14 @@ const UNITS = {
     procstat_memory_rss: "B"
 }
 
-//@TODO Add interface
+/*This function is given a seed and a index 
+and return a hex colour in string format. 
+
+seed:(0-2) determine if it is red,blue, or green based
+idx:  represent the statistic we are drawing and assigns a colour for that stat.
+
+As idx increases the colour goes closer to red,green, or blue depending on seed.
+*/
 function getRandomColour(seed,idx) {
     // at least 1 FF to make bright colours
     let coloursOptions = [MIN_COLOUR,MIN_COLOUR,MIN_COLOUR]
@@ -27,7 +35,31 @@ function getRandomColour(seed,idx) {
 
     return colour
 }
-//@TODO Add interface
+const CustomToolTip = (props) => {
+    var { active, payload, label } = props
+    
+    if (active && payload && payload.length) {
+        var payloades =[]
+        for(var i=0; i< payload.length; i++){
+
+            payloades.push(<p style={{color:payload[i].stroke}}>
+                {`${payload[i].name} : ${payload[i].value.toPrecision(props.config.sigfig)}`}</p>)
+        }
+        if(props.config.showCommitDate){
+            var date = new Date(payload[0].payload.CommitDate*1000)
+            payloades.push(<p>{`Commit Date: ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()} ${date.getUTCDate()}-${date.getUTCMonth()+1}-${date.getUTCFullYear()}`}</p>)
+        }   
+        return (
+            <div className="custom-tooltip">
+            <p className="label">{label}</p>
+            {payloades}
+            </div>
+        );
+    }
+  
+    return null;
+  };
+//This component graphs statistics for each metric
 export function Graph(props){
     var metricLines = [] // list of react components
     var metricStatsNames = Object.keys(props.data[0]) // names of stats
@@ -37,7 +69,7 @@ export function Graph(props){
     metricStatsNames.forEach((name)=>{basicVisibility[name]= true}) //init  stats visibility
     const [visibility,setVisibility] = useState(basicVisibility)
     metricStatsNames.forEach((name) => {
-        if (!(IGNORE_ATTRIBUTES.includes(name))) {
+        if (!(IGNORE_ATTRIBUTES_GRAPH.includes(name))) {
             metricLines.push(
                 <Line type="monotone" 
                 dataKey={name} 
@@ -53,34 +85,41 @@ export function Graph(props){
             i++
         }
     })
-    metricLines.push(<ReferenceLine y={THRESHOLDS[props.title]} 
-        label="Threshold" stroke="blue" strokeDasharray="10 10" />) //Add a threshold line
+    if(props.config.Thresholds != undefined){
+        metricLines.push(<ReferenceLine y={props.config.Thresholds[props.title]} 
+            label="Threshold" stroke="blue" strokeDasharray="10 10" />) //Add a threshold line
+    }
     return (
         <div class="graph">
             <h2>{props.title}</h2>
             <LineChart width={1500} height={600} data={props.data} margin={{top:5,right:30}}>
                 {metricLines}
-                <Tooltip />
+                <Tooltip content={
+                <CustomToolTip config={props.config}/>
+                }/>
                 <Legend verticalAlign="top" onClick={(data)=>{
-                    console.log("clicked",data,visibility)
+                    // console.log("clicked",data,visibility)
                     var lastVisibility = visibility[data["dataKey"]]
                     setVisibility({...visibility,[data["dataKey"]]:!lastVisibility})
-                    console.log(visibility)
+                    // console.log(visibility)
                 }}/>
                 <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-                <XAxis dataKey="Hash" label="Hash" height={100}/>
-                <YAxis width={200} label ={UNITS[props.title]}/>
+                <XAxis dataKey="Hash" label="Hash" height={100} 
+                style={{fontSize: props.config.graphFontSize}}/>
+                <YAxis tickCount = {6} width={100}label ={UNITS[props.title]} 
+                domain={[dataMin => dataMin*0.95,'auto']} style={{fontSize: props.config.graphFontSize}} />
             </LineChart>
         </div>
     );
 }
-//@TODO Add interface
+//This component creates a graph for each metric
 export default function Grapher(props) {
     var metrics = Object.keys(props.data)
     var graphs = []
     var j=0;
     metrics.forEach(element => {
-        graphs.push(<Graph data={props.data[element]} idx = {j} title={element} />) // Add a graph
+        graphs.push(<Graph data={props.data[element]} idx = {j} title={element} 
+        config={props.config}/>) // Add a graph
         j++;
     })
     return (

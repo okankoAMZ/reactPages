@@ -1,9 +1,12 @@
 import Page from "./page"
 import './homepage.css'
 import Navbar from '../helpers/navbar';
-//@TODO Add interface
+//This webpage provides information about the project
 export default class Home extends Page {
     render() {
+        document.body.style.setProperty("--fontSize",parseInt(this.state.config.textFontSize).toString()+"px")
+        document.body.style.setProperty("--h3fontSize",(parseInt(this.state.config.textFontSize)+4).toString()+"px")
+        document.body.style.setProperty("--h2fontSize",(parseInt(this.state.config.textFontSize)+8).toString()+"px")
         return (
             <div class="homepage">
                 <Navbar/>
