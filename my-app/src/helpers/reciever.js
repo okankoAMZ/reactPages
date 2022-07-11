@@ -25,6 +25,7 @@ const BATCH_SIZE = parseInt(ONE_MB / PACKET_SIZE)
 class Receiver {
   constructor(DataBaseName) {
     // this.cacheClear()
+
     this.dyanamoClient = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
     this.DataBaseName = DataBaseName
     this.CWAData = null
@@ -41,35 +42,46 @@ class Receiver {
   async update() {
     console.log("updating")
     // check the latest hash from cache
-    let dynamoLatestItem = (await this.getLatestItem())
-    let DynamoHash = dynamoLatestItem["Hash"]
-    // ask dynamo what is the lastest hash it received 
-    let cacheLatestItem = this.cacheGetLatestItem()//["Hash"].S //rename to lastest hash
-    let cacheLatestHash = ""
-    if (cacheLatestItem == undefined) {
-      console.log("NO cache found",localStorage.key(0),localStorage.key(1))
-      // no cache found, pull every thing and set
-      this.CWAData = await this.getAllItems()
-      console.log(this.CWAData)
+    try{
+      let dynamoLatestItem = (await this.getLatestItem())
+      let DynamoHash = dynamoLatestItem["Hash"]
+      // ask dynamo what is the lastest hash it received 
+      let cacheLatestItem = this.cacheGetLatestItem()//["Hash"].S //rename to lastest hash
+      let cacheLatestHash = ""
+      if (cacheLatestItem == undefined) {
+        console.log("NO cache found",localStorage.key(0),localStorage.key(1))
+        // no cache found, pull every thing and set
+        this.CWAData = await this.getAllItems()
+        console.log(this.CWAData)
 
-      this.latestItem = dynamoLatestItem
-      this.cacheSaveData()
-      return
-    } else {
-      cacheLatestHash = cacheLatestItem["Hash"]
-      this.CWAData = this.cacheGetAllData()
+        this.latestItem = dynamoLatestItem
+        this.cacheSaveData()
+        return
+      } else {
+        cacheLatestHash = cacheLatestItem["Hash"]
+        this.CWAData = this.cacheGetAllData()
+      }
+      if (DynamoHash == cacheLatestHash) {
+        console.log("synced") // synced up
+      } else if (parseInt(dynamoLatestItem["CommitDate"]) >= parseInt(cacheLatestItem["CommitDate"])) {
+        /// if hashes dont match call getBatchItem with local hash and update local hash with new data
+        console.log("not synced")
+        var newItems = await this.getBatchItem(cacheLatestItem["CommitDate"], dynamoLatestItem["CommitDate"])
+        console.log(this.CWAData, newItems)
+        this.CWAData.push.apply(this.CWAData, newItems)
+        this.latestItem = newItems[newItems.length - 1]
+        // console.log(this.latestItem)
+        this.cacheSaveData()
+      }
     }
-    if (DynamoHash == cacheLatestHash) {
-      console.log("synced") // synced up
-    } else if (parseInt(dynamoLatestItem["CommitDate"]) >= parseInt(cacheLatestItem["CommitDate"])) {
-      /// if hashes dont match call getBatchItem with local hash and update local hash with new data
-      console.log("not synced")
-      var newItems = await this.getBatchItem(cacheLatestItem["CommitDate"], dynamoLatestItem["CommitDate"])
-      console.log(this.CWAData, newItems)
-      this.CWAData.push.apply(this.CWAData, newItems)
-      this.latestItem = newItems[newItems.length - 1]
-      // console.log(this.latestItem)
-      this.cacheSaveData()
+    catch(err){
+      console.log(`ERROR:${err}`)
+      alert(`ERROR:${err}`)
+      if (this.cacheGetLatestItem==undefined){
+        return {}
+      }
+      return  this.cacheGetAllData()
+      
     }
 
   }
@@ -182,6 +194,11 @@ class Receiver {
         }
         var newStructure = cleanData[attribute]
         GENERAL_ATTRIBUTES.forEach((generalAttribute)=>{
+          if(generalAttribute == "CommitDate"){
+            if(cleanData[generalAttribute].length >7){
+              newStructure[generalAttribute] = cleanData[generalAttribute].substring(0,7)
+            }
+          }
           newStructure[generalAttribute] = cleanData[generalAttribute]
         })
         formattedData[attribute].push(newStructure)
