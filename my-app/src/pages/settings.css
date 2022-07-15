@@ -21,13 +21,18 @@
     /* margin-top:25%; */
     text-align:center;
 }
+.metric_setting_box > .setting{
+    width: 85%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
 .setting{
-    width: 26%;
-    margin-left: 37%;
-    margin-right: 37%;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
     margin-top: 0%;
-    margin-bottom: 1%;
-    padding: 1%;
+    margin-bottom: 0%;
+    padding: 2%;
     /* background-color: brown; */
     border: 1px solid gray;
     font-size: large;

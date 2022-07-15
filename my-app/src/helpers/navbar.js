@@ -21,10 +21,6 @@ export default function Navbar(){
                 <li>
                     <Link to="/graphics"><FaChartLine/>Graph</Link>
                 </li>
-                <li>
-                    <Link to="/settings"><AiFillSetting/>Settings</Link>
-                </li>
-
             </ul>
         </div>
     );

@@ -3,17 +3,18 @@ import { Component,useState } from 'react';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ErrorBar, ReferenceLine} from 'recharts';
 import "./graph.css"
 
-const THRESHOLDS = {procstat_cpu_usage:0.47,procstat_memory_rss:70000000}
-export const IGNORE_ATTRIBUTES  = ["Data", "Hash", "Year", "CommitDate",]
+// const THRESHOLDS = {procstat_cpu_usage:0.47,procstat_memory_rss:70000000}
+export const IGNORE_ATTRIBUTES  = ["Data", "Hash", "Year", "CommitDate","Link"]
 const IGNORE_ATTRIBUTES_GRAPH =  IGNORE_ATTRIBUTES + ["Period","Std"]
 const N_STATS = 4
 const MAX_COLOUR = 0xFF
 const MIN_COLOUR = 0x11
 const COLOUR_DIFF_CONST = Math.floor((MAX_COLOUR-MIN_COLOUR)/N_STATS)
-const UNITS = {
+export const UNITS = {
     procstat_cpu_usage : "%",
     procstat_memory_rss: "B"
 }
+
 
 /*This function is given a seed and a index 
 and return a hex colour in string format. 
@@ -45,10 +46,8 @@ const CustomToolTip = (props) => {
             payloades.push(<p style={{color:payload[i].stroke}}>
                 {`${payload[i].name} : ${payload[i].value.toPrecision(props.config.sigfig)}`}</p>)
         }
-        if(props.config.showCommitDate){
-            var date = new Date(payload[0].payload.CommitDate*1000)
-            payloades.push(<p>{`Commit Date: ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()} ${date.getUTCDate()}-${date.getUTCMonth()+1}-${date.getUTCFullYear()}`}</p>)
-        }   
+        var date = new Date(payload[0].payload.CommitDate*1000)
+        payloades.push(<p>{`Commit Date: ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}|${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`}</p>)   
         return (
             <div className="custom-tooltip">
             <p className="label">{label}</p>
@@ -62,7 +61,7 @@ const CustomToolTip = (props) => {
 //This component graphs statistics for each metric
 export function Graph(props){
     var metricLines = [] // list of react components
-    var metricStatsNames = Object.keys(props.data[0]) // names of stats
+    var metricStatsNames = Object.keys(props.data[props.data.length-1]) // names of stats
     var mainColour = props.idx % 2 // main colour for that metric., red , green ,blue
     var i =0
     var basicVisibility = {}
@@ -82,17 +81,21 @@ export function Graph(props){
                 </Line>
             )
             //Draw each stats
+            
             i++
         }
     })
-    if(props.config.Thresholds != undefined){
-        metricLines.push(<ReferenceLine y={props.config.Thresholds[props.title]} 
+    if(props.config["metricConfig"][props.title].thresholds != undefined){
+        metricLines.push(<ReferenceLine y={props.config["metricConfig"][props.title].thresholds} 
             label="Threshold" stroke="blue" strokeDasharray="10 10" />) //Add a threshold line
     }
+    var size = parseInt(props.config.graphSize)
     return (
         <div class="graph">
             <h2>{props.title}</h2>
-            <LineChart width={1500} height={600} data={props.data} margin={{top:5,right:30}}>
+            <LineChart width={600+150*size} height={400+75*size} 
+            data={props.data.slice(-props.config.nLastCommits,props.data.length)} 
+            margin={{top:5,right:30}}>
                 {metricLines}
                 <Tooltip content={
                 <CustomToolTip config={props.config}/>
@@ -106,6 +109,7 @@ export function Graph(props){
                 <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
                 <XAxis dataKey="Hash" label="Hash" height={100} 
                 style={{fontSize: props.config.graphFontSize}}/>
+                
                 <YAxis tickCount = {6} width={100}label ={UNITS[props.title]} 
                 domain={[dataMin => dataMin*0.95,'auto']} style={{fontSize: props.config.graphFontSize}} />
             </LineChart>

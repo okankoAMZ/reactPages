@@ -19,8 +19,8 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import "./table.css"
-import {IGNORE_ATTRIBUTES} from "./grapher"
-
+import {IGNORE_ATTRIBUTES,UNITS} from "./grapher"
+//@TODO ADD UNITS TO TABLE HEADERS
 const MIN_COLOUR = 0x50
 function getRandomColour(idx){
   var colours = [MIN_COLOUR, MIN_COLOUR,MIN_COLOUR]
@@ -95,30 +95,33 @@ TablePaginationActions.propTypes = {
 };
   
 
-function CreateRow(data) {
+function CreateRow(data,sigfig) {
     var line = []
-
-    line.push(<TableCell>{data["Hash"]}</TableCell>);
-    line.push(<TableCell>{data["CommitDate"]}</TableCell>);
-    line.push(<TableCell>{data["Year"]}</TableCell>);
+    console.log(data["Hash"])
+    line.push(<TableCell class="cell_text"><a href={data["Link"]} target="_blank">
+      {data["Hash"]}</a></TableCell>);
+    var date = new Date(data["CommitDate"] *1000)
+    line.push(<TableCell class="cell_text">{date.toUTCString()}</TableCell>);
+    // line.push(<TableCell class="cell_text">{data["Year"]}</TableCell>);
 
     for (var metric in data) {
-        if (metric == "Data" || metric == "Hash" || metric == "CommitDate" || metric == "Year") {
+        if (metric == "Data" || metric == "Hash" || metric == "CommitDate" || metric == "Year" ||metric == "Link") {
             continue;
         }
-        line.push(<TableCell>{data[metric]}</TableCell>);
+        line.push(<TableCell class="cell_text">{data[metric].toPrecision(sigfig)}</TableCell>);
     }
     return line;
 }
 
 export function BasicTable(props) {
+  // debugger;
     document.body.style.setProperty("--tablefontSize",parseInt(props.config.tableFontSize).toString()+"px")
     var metricNames = []
     var metricData = []
-
-    metricNames.push(<TableCell><b>{"Hash"}</b></TableCell>)
-    metricNames.push(<TableCell><b>{"CommitDate"}</b></TableCell>)
-    metricNames.push(<TableCell><b>{"Year"}</b></TableCell>)
+    var sigfig = parseInt(props.config.sigfig)
+    metricNames.push(<TableCell class="cell_text head">{"Hash"}</TableCell>)
+    metricNames.push(<TableCell class="cell_text head">{"CommitDate"}</TableCell>)
+    // metricNames.push(<TableCell class="cell_text head">{"Year"}</TableCell>)
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -142,21 +145,28 @@ export function BasicTable(props) {
         if (IGNORE_ATTRIBUTES.includes(metric)) {
             continue;
         }
-        metricNames.push(<TableCell><b>{metric}</b></TableCell>)
+
+        metricNames.push(<TableCell class="cell_text head">{`${metric} (${UNITS[props.title]})`}</TableCell>)
     }
-
-    for (let i = 0; i < props.data.length; i++) {
-        var cleanData = props.data
-        for(let j  of  Object.keys(props.data[i])){
-          if (IGNORE_ATTRIBUTES.includes(j)) {
-            continue;
-          }
-          cleanData[i][j] = props.data[i][j].toPrecision(props.config.sigfig)
-        }
-
-        metricData.push(<TableRow style ={ i % 2 ? {background : "#dddddd" } : { background: "white" }}>{CreateRow(cleanData[i])}</TableRow>)
-    }
-
+    // debugger;
+    // for (let i = 0; i < props.data.length; i++) {
+    //     // var cleanData = props.data
+    //     //  Object.keys(props.data[i]).forEach((j)=>{
+    //     //   if (IGNORE_ATTRIBUTES.includes(j)) {
+    //     //       return
+    //     //   }
+    //     //   try{
+    //     //   console.log("worked",typeof props.data[i][j],props.data[i][j])
+    //     //   cleanData[i][j] = props.data[i][j].toPrecision(parseInt(props.config.sigfig))
+    //     //   debugger;
+    //     // }catch(err){
+    //     //     debugger;
+    //     //   }
+    //     // })
+    //     // debugger;
+    //     metricData.push(<TableRow style ={ i % 2 ? {background : "#dddddd" } : { background: "white" }}>{CreateRow(props.data[i],sigfig)}</TableRow>)
+    // }
+    // debugger;
     return(
         <Container class="table_container">
             <h2>{props.title}</h2>
@@ -173,7 +183,8 @@ export function BasicTable(props) {
                             ? props.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             : props.data
                         ).map((row, index) => (
-                            <TableRow style ={ index % 2 ? {background : "#dddddd" } : { background: "white" }}>{CreateRow(row)}</TableRow>
+                            
+                            <TableRow style ={ index % 2 ? {background : "#dddddd" } : { background: "white" }}>{CreateRow(row,sigfig)}</TableRow>
                         ))}
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>

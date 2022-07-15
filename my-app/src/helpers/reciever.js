@@ -7,6 +7,8 @@ AWS.config.update({
 // ENDS HERE
 const LATEST_ITEM = "LatestHash"
 const CWAData = "CWAData"
+const LINK ="Link"
+const REPO_LINK = "https://github.com/aws/amazon-cloudwatch-agent"
 const DEBUG = false
 const GENERAL_ATTRIBUTES = ["Hash", "Year", "CommitDate"]
 //@TODO: make this auto update
@@ -52,8 +54,7 @@ class Receiver {
         console.log("NO cache found",localStorage.key(0),localStorage.key(1))
         // no cache found, pull every thing and set
         this.CWAData = await this.getAllItems()
-        console.log(this.CWAData)
-
+        console.log("getting data from dynamo",this.CWAData)
         this.latestItem = dynamoLatestItem
         this.cacheSaveData()
         return
@@ -68,6 +69,7 @@ class Receiver {
         console.log("not synced")
         var newItems = await this.getBatchItem(cacheLatestItem["CommitDate"], dynamoLatestItem["CommitDate"])
         console.log(this.CWAData, newItems)
+        // debugger;
         this.CWAData.push.apply(this.CWAData, newItems)
         this.latestItem = newItems[newItems.length - 1]
         // console.log(this.latestItem)
@@ -108,6 +110,7 @@ class Receiver {
       console.log(`getLatestItem: Item: ${retData.Items[0]["Hash"]["S"]}, Count: ${retData.Count}, ScannedCount:${retData.ScannedCount}`)
     }
     var cleanData = AWS.DynamoDB.Converter.unmarshall(retData.Items[0])
+    cleanData["Hash"] = cleanData["Hash"].substring(0,7)
     return cleanData
     // return this.latestItem
   }
@@ -194,13 +197,17 @@ class Receiver {
         }
         var newStructure = cleanData[attribute]
         GENERAL_ATTRIBUTES.forEach((generalAttribute)=>{
-          if(generalAttribute == "CommitDate"){
+          if(generalAttribute == "Hash"){
             if(cleanData[generalAttribute].length >7){
+              //debugger;
               newStructure[generalAttribute] = cleanData[generalAttribute].substring(0,7)
+              newStructure[LINK] = `${REPO_LINK}/commit/${cleanData[generalAttribute]}`
+              return
             }
           }
           newStructure[generalAttribute] = cleanData[generalAttribute]
         })
+        // console.log("DATA",newStructure)
         formattedData[attribute].push(newStructure)
         
       })
@@ -213,6 +220,7 @@ class Receiver {
   //@TODO Add interface
   cacheClear() {
     localStorage.clear()
+    document.location.reload()
   }
   cacheGetAllData() {
     return JSON.parse(localStorage.getItem(CWAData))

@@ -38,6 +38,18 @@ export default class Home extends Page {
                         CPU peak usage, CPU min usage, etc.
                     </p>
                 </section>
+                <section>
+                    <h3> FAQ</h3>
+                    <p>
+                        Q: Graphs or Table are not updated, when I refresh? 
+                        <br/>A: Hit this button <button
+                        title="Click"
+                        style={{width:"50px",height:"16px"}}
+                         onClick={()=>{
+                             this.state.Receiver.cacheClear()
+                         }}/> 
+                    </p>
+                </section>
             </div>
 
         );
