@@ -1,0 +1,21 @@
+.wiki_page {
+    text-align: center;
+    list-style-type: circle;
+}
+.wiki_page section{
+    margin: 1%;
+    margin-left: 10%;
+    margin-right: 10%;
+    text-align: left;
+}
+.wiki_page h3{
+    padding: 2%;
+    padding-left: 0%;
+}
+.wiki_page h4{
+    padding: 0.5%;
+
+}
+.wiki_page p{
+    padding: 0.5%;
+}

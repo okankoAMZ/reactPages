@@ -4,8 +4,8 @@ import './index.css';
 import GraphicsPage from './pages/graphics';
 import Home from "./pages/home"
 import TablePage from './pages/table'
-import PriceCalculatorPage from './pages/price'
-import SettingsPage from './pages//settings'
+import SettingsPage from './pages/settings'
+import WikiPage from "./pages/wiki"
 import { HashRouter,BrowserRouter,Route,Routes,Navigate } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 
@@ -18,8 +18,8 @@ root.render(
       <Route exact path="/" element={<Home /> }/>
       <Route path="/graphics" element={<GraphicsPage />}/>
       <Route path="/table" element={<TablePage />}/>
-      <Route path="/price" element={<PriceCalculatorPage />}/>
       <Route path="/settings" element={<SettingsPage />}/>
+      <Route path="/wiki" element={<WikiPage/>}/>
     </Routes>
   </HashRouter>
 );
