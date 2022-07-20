@@ -21,7 +21,7 @@ export default class Home extends Page {
                         It is currently designed and configured to be run on
                         Amazon Linux on an EC2 instance. The aim of this tracker is to
                         provide information on expected resource usage of
-                        the CloudWatch Agent so resources can be accurately allocated
+                        the CloudWatch Agent so resources can be accurately predicted/allocated
                         to the CloudWatch Agent.
                         <div><br></br></div>
                         To obtain this benchmarking data, an EC2 instance is started and CloudWatch Agent is 
@@ -55,7 +55,7 @@ export default class Home extends Page {
                 <section>
                     <h3>Intended Use</h3>
                     <p>
-                        With this data, customers can get a better idea of how the CloudWatch Agent performs under different loads.
+                        With this data, CloudWatch agent customers can get a better idea of how the CloudWatch Agent performs under different loads.
                         Since several tests are run with different load cases, customers can select a test that best represents a use
                         case similar to theirs, and view the benchmarked resources used by CloudWatch Agent with that simulated 
                         configuration and load. This data should provide insights into how efficiently the CloudWatch Agent can be expected 
