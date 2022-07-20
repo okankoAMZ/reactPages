@@ -10,44 +10,71 @@ export default class Home extends Page {
         return (
             <div class="homepage">
                 <Navbar/>
-                <h2>HomePage</h2>
+                <h2>CloudWatch Agent Performance Metrics</h2>
                 {/* @TODO: Add more text */}
                 <section>
-                    <h3>About CWA Performance Tracking</h3>
+                    <h3>About CloudWatch Agent Performance Tracking</h3>
                     <p>
-                        The CloudWatch Agent performance tracker provides
-                        data on the resource usage of the CWA itself.
+                        The <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Install-CloudWatch-Agent.html"
+                            target="_blank">CloudWatch Agent</a> performance tracker provides
+                        data on the resource usage of the CloudWatch Agent.
                         It is currently designed and configured to be run on
-                        Amazon Linux on EC2. The aim of this tracker is to
+                        Amazon Linux on an EC2 instance. The aim of this tracker is to
                         provide information on expected resource usage of
-                        the CWA so resources can be accurately allocated
-                        to the CWA.
+                        the CloudWatch Agent so resources can be accurately allocated
+                        to the CloudWatch Agent.
+                        <div><br></br></div>
+                        To obtain this benchmarking data, an EC2 instance is started and CloudWatch Agent is 
+                        installed on the host. A configuration file is generated for the agent to use with a specified 
+                        number of logs monitored. When the test begins, the agent is started and lines are written to 
+                        each log file monitored in the config. The lines are written at a specified rate for the 
+                        given test. While the agent is running, it is also monitoring it's own resource usage so it can 
+                        report this data. These metrics are pulled from CloudWatch and saved as the benchmarking data used 
+                        on this website. 
                     </p>
                 </section>
                 <section>
                     <h3>Need Assistance?</h3>
                     <p>
-                        Detail/link where to report or cut
-                        a ticket to our team if an issue comes up.
+                        Read our FAQ below
+                        <div><br></br></div>
+                        That doesn't help? Let us know about your issue 
+                        by submitting a ticket at: <a href="https://t.corp.amazon.com/create" target="_blank">https://t.corp.amazon.com/create</a>
+                        <div>
+                            <br></br>
+                            Category: AWS
+                            <br></br>
+                            Type: CloudWatch
+                            <br></br>
+                            Item: Orange Zest
+                            <div><br></br></div>
+                        </div>
+                        Please include "CloudWatch Agent Performance Tracker" in the title of the ticket.
                     </p>
                 </section>
                 <section>
                     <h3>Intended Use</h3>
                     <p>
-                        This project captures CPU average usage,
-                        CPU peak usage, CPU min usage, etc.
+                        With this data, customers can get a better idea of how the CloudWatch Agent performs under different loads.
+                        Since several tests are run with different load cases, customers can select a test that best represents a use
+                        case similar to theirs, and view the benchmarked resources used by CloudWatch Agent with that simulated 
+                        configuration and load. This data should provide insights into how efficiently the CloudWatch Agent can be expected 
+                        to run under a given load.
+                        <div><br></br></div>
+                        Currently, the performance benchmarking collects the CloudWatch Agent's CPU usage 
+                        and <a href="https://en.wikipedia.org/wiki/Resident_set_size" target="_blank">Resident Set Size (RSS) memory</a>.
                     </p>
                 </section>
-                <section>
+                <section style={{"margin-bottom": "3%"}}>
                     <h3> FAQ</h3>
                     <p>
-                        Q: Graphs or Table are not updated, when I refresh? 
+                        Q: Graphs or Table are not updated when I refresh? 
                         <br/>A: Hit this button <button
                         title="Click"
-                        style={{width:"50px",height:"16px"}}
+                        style={{width:"15%",height:"24px"}}
                          onClick={()=>{
                              this.state.Receiver.cacheClear()
-                         }}/> 
+                         }}>Clear Cache</button>
                     </p>
                 </section>
             </div>
