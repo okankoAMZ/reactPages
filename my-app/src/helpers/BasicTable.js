@@ -173,7 +173,7 @@ export function BasicTable(props) {
             <TableContainer component={Paper}>
                 <Table aria-label="data table" class="table">
                     <TableHead>
-                        <TableRow style={{background:getRandomColour(props.idx), "text-align": "center"}}>
+                        <TableRow style={{background:getRandomColour(props.idx), "textAlign": "center"}}>
                             {metricNames}
                         </TableRow>
                     </TableHead>
