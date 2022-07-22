@@ -1,12 +1,11 @@
 
-import { Component,useState } from 'react';
+import { useState } from 'react';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ErrorBar, ReferenceLine} from 'recharts';
 import "./graph.css"
+import {IGNORE_ATTRIBUTES,TEST_VARIABLES,N_STATS} from "../config"
 
-// const THRESHOLDS = {procstat_cpu_usage:0.47,procstat_memory_rss:70000000}
-export const IGNORE_ATTRIBUTES  = ["Data", "Hash", "Year", "CommitDate","Link"]
+
 const IGNORE_ATTRIBUTES_GRAPH =  IGNORE_ATTRIBUTES + ["Period","Std"]
-const N_STATS = 4
 const MAX_COLOUR = 0xFF
 const MIN_COLOUR = 0x11
 const COLOUR_DIFF_CONST = Math.floor((MAX_COLOUR-MIN_COLOUR)/N_STATS)
@@ -60,13 +59,27 @@ const CustomToolTip = (props) => {
   };
 //This component graphs statistics for each metric
 export function Graph(props){
+    
+    var testCases = Object.keys(props.data)
+    var testVariables = Array((testCases[0].split("-")).length) //map[string]Set
+    testCases.forEach((test)=>{
+        test.split("-").forEach((value,idx)=>{
+            if(testVariables[idx]===undefined){
+                testVariables[idx] = new Set()
+            }
+            testVariables[idx].add(value)
+        })
+    })
+    const [currentTestCase,setCurrentTest] = useState(testCases[0])
+    var buttons = []
     var metricLines = [] // list of react components
-    var metricStatsNames = Object.keys(props.data[props.data.length-1]) // names of stats
+    var metricStatsNames = Object.keys(props.data[currentTestCase][props.metric][0]) // names of stats
     var mainColour = props.idx % 2 // main colour for that metric., red , green ,blue
     var i =0
     var basicVisibility = {}
     metricStatsNames.forEach((name)=>{basicVisibility[name]= true}) //init  stats visibility
     const [visibility,setVisibility] = useState(basicVisibility)
+    
     metricStatsNames.forEach((name) => {
         if (!(IGNORE_ATTRIBUTES_GRAPH.includes(name))) {
             metricLines.push(
@@ -85,17 +98,54 @@ export function Graph(props){
             i++
         }
     })
-    if(props.config["metricConfig"][props.title].thresholds != undefined){
-        metricLines.push(<ReferenceLine y={props.config["metricConfig"][props.title].thresholds} 
+    if(props.config["metricConfig"][props.metric].thresholds !== undefined){
+        metricLines.push(<ReferenceLine y={props.config["metricConfig"][props.metric].thresholds} 
             label="Threshold" stroke="blue" strokeDasharray="10 10" />) //Add a threshold line
     }
+    testVariables.forEach((varSet,i)=>{
+        console.log(varSet,varSet.values);
+        var options = []
+        {varSet.forEach((value)=>{
+            options.push(<option>{value}</option>)
+        })}
+        buttons.push(
+        <div class="select_box">
+            <label>{TEST_VARIABLES[i]}</label>
+            <select id={`testCase${i}`}
+            onChange={()=>{
+                var testCase =""
+                var n_variables = testVariables.length
+                for( var j=0; j<n_variables; j++){
+                    testCase += document.getElementById(`testCase${j}`).value
+                    if( j< n_variables -1){
+                        testCase+="-"
+                    }
+                }
+                console.log(testCase)
+                setCurrentTest(testCase)
+            }}
+            >{options}</select>
+        </div>)
+    })
+
+    props.data[currentTestCase][props.metric].forEach((item)=>{
+        if(item["isRelease"]){
+            metricLines.push(<ReferenceLine x={item["Hash"]} 
+            label="" stroke="#8B008B"   strokeWidth={3}/>)
+        }
+    })
     var size = parseInt(props.config.graphSize)
+    console.log(props.data[currentTestCase][props.metric])
     return (
         <div class="graph">
-            <h2>{props.title}</h2>
-            <LineChart width={600+150*size} height={400+75*size} 
-            data={props.data.slice(-props.config.nLastCommits,props.data.length)} 
-            margin={{top:5,right:30}}>
+            <div class="button_container">
+                {buttons}
+            </div>
+            <h2>{`${props.title}-${currentTestCase}`}</h2>
+            <LineChart width={800+100*size} height={300+75*size} 
+            data={props.data[currentTestCase][props.metric].slice(-props.config.nLastCommits,props.data.length)} 
+            margin={{top:5,right:30}}
+            style={{"overflowY":"hidden"}}>
                 {metricLines}
                 <Tooltip content={
                 <CustomToolTip config={props.config}/>
@@ -107,7 +157,7 @@ export function Graph(props){
                     // console.log(visibility)
                 }}/>
                 <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-                <XAxis dataKey="Hash" label="Hash" height={100} 
+                <XAxis dataKey="Hash" label="Hash" height={100} tickCount={props.config.nLastCommits}
                 style={{fontSize: props.config.graphFontSize}}/>
                 
                 <YAxis tickCount = {6} width={100}label ={UNITS[props.title]} 
@@ -118,11 +168,21 @@ export function Graph(props){
 }
 //This component creates a graph for each metric
 export default function Grapher(props) {
-    var metrics = Object.keys(props.data)
+    
+    if(props.data === undefined){
+        return
+    }
+    
+    var testCase = props.data[Object.keys(props.data)[0]]
+    if( testCase === undefined){
+        return
+
+    }
+    var metrics = Object.keys(testCase)
     var graphs = []
     var j=0;
     metrics.forEach(element => {
-        graphs.push(<Graph data={props.data[element]} idx = {j} title={element} 
+        graphs.push(<Graph metric={element}data={props.data} idx = {j} title={element} 
         config={props.config}/>) // Add a graph
         j++;
     })

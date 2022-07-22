@@ -32,7 +32,7 @@ export default class TablePage extends Page {
                 </div>
                 <div class="page_container">
                     <div class="content">
-                        <TableGroup data={this.state.data} config={this.state.config} />
+                        {/* <TableGroup data={this.state.data} config={this.state.config} /> */}
                     </div>
                     <div class="settings" onChange={console.log("changed")}>
                         <div class="settings_page">

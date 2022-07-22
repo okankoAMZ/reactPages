@@ -6,7 +6,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Container from "@material-ui/core/Container";
-import { makeStyles } from "@material-ui/core/styles";
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
@@ -19,7 +18,7 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import "./table.css"
-import {IGNORE_ATTRIBUTES,UNITS} from "./grapher"
+import {IGNORE_ATTRIBUTES,UNITS} from "../config"
 //@TODO ADD UNITS TO TABLE HEADERS
 const MIN_COLOUR = 0x50
 function getRandomColour(idx){
@@ -148,25 +147,6 @@ export function BasicTable(props) {
 
         metricNames.push(<TableCell class="cell_text head">{`${metric} (${UNITS[props.title]})`}</TableCell>)
     }
-    // debugger;
-    // for (let i = 0; i < props.data.length; i++) {
-    //     // var cleanData = props.data
-    //     //  Object.keys(props.data[i]).forEach((j)=>{
-    //     //   if (IGNORE_ATTRIBUTES.includes(j)) {
-    //     //       return
-    //     //   }
-    //     //   try{
-    //     //   console.log("worked",typeof props.data[i][j],props.data[i][j])
-    //     //   cleanData[i][j] = props.data[i][j].toPrecision(parseInt(props.config.sigfig))
-    //     //   debugger;
-    //     // }catch(err){
-    //     //     debugger;
-    //     //   }
-    //     // })
-    //     // debugger;
-    //     metricData.push(<TableRow style ={ i % 2 ? {background : "#dddddd" } : { background: "white" }}>{CreateRow(props.data[i],sigfig)}</TableRow>)
-    // }
-    // debugger;
     return(
         <Container class="table_container">
             <h2>{props.title}</h2>

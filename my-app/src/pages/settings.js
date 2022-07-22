@@ -1,27 +1,8 @@
 import './settings.css'
+import {MetricConfigs} from "../config"
 const CONFIG = "config"
 const METRIC_CONFIG_KEY = "metricConfig"
 
-const MetricConfigs = [
-        "thresholds",
-]
-export const DEFAULT_CONFIG = {
-    "sigfig": "3",
-    "textFontSize": "20",
-    "graphFontSize": "16",
-    "graphSize" : "2",
-    "tableFontSize": "15",
-    "nLastCommits": "10",
-    "metricConfig": {
-        "procstat_cpu_usage": {
-            "thresholds":"0.4",
-        },
-        "procstat_memory_rss": {
-            "thresholds": "600000",
-        }
-    },
-
-}
 function loadSetting(settingTag) {
     var config = JSON.parse(localStorage.getItem(CONFIG))
     if (config == null) {
@@ -45,11 +26,11 @@ export default function Setting(props) {
     var inputType = <input type="text" />
     switch (props.type) {
         case "select": {
-            if (props.range == undefined) { throw "Select requires a range like : [start,end,interval,unit]" }
+            if (props.range === undefined) { throw "Select requires a range like : [start,end,interval,unit]" }
             var options = []
             for (var i = props.range[0]; i < props.range[1]; i = i + props.range[2]) {
                 options.push(
-                    <option selected={i == defaultValue ? "selected" : ""}
+                    <option selected={i === defaultValue ? "selected" : ""}
                         value={i}>{`${i} ${props.range[3]}`}</option>
                 )
             }
@@ -58,7 +39,7 @@ export default function Setting(props) {
                 // debugger;
                 console.log(event.target.value, typeof (event.target.value))
                 saveSetting(key, event.target.value)
-                if(props.page!=undefined){
+                if (props.page !== undefined) {
                     props.page.updateConfig()
                 }
             }}>{options}</select>
@@ -69,7 +50,7 @@ export default function Setting(props) {
                 // setDefaultValue(event.target.value)
                 console.log(event.target.value, typeof (event.target.value))
                 // saveSetting(key,event.target.value)
-                if (props.onSave == undefined) {
+                if (props.onSave === undefined) {
                     saveSetting(key, event.target.value)
                 } else {
                     props.onSave(key, event.target.value)
@@ -89,28 +70,34 @@ export default function Setting(props) {
 
 
 export function MetricSettingsBox(props) {
-    if(props.data==undefined || props.data==null){
+    if (props.data === undefined || props.data == null) {
         return null
     }
-    var metrics = Object.keys(props.data)
+    var testCase = props.data[Object.keys(props.data)[0]]
+    if (testCase === undefined) {
+        return
+    }
+    var metrics = Object.keys(testCase)
     var metricSpecificSettings = []
     var defaultValue = loadSetting(METRIC_CONFIG_KEY)
-    metrics.forEach((metric)=> {
-        MetricConfigs.forEach((settingKey)=> {
+    MetricConfigs.forEach((settingKey) => {
+        metricSpecificSettings.push(<h4>{settingKey.toUpperCase()}</h4>)
+        metrics.forEach((metric) => {
             metricSpecificSettings.push(<Setting
-                title={`${metric} ${settingKey}`}
+                title={`${metric}`}
                 settingKey={`${settingKey}`}
                 onSave={(key, value) => {
-                    defaultValue[metric][key] =parseFloat(value)
+                    defaultValue[metric][key] = parseFloat(value)
                     // debugger
                     saveSetting(METRIC_CONFIG_KEY, defaultValue)
-                    if(props.page!=undefined){
+                    if (props.page !== undefined) {
                         props.page.updateConfig()
                     }
                 }}
                 defaultValue={defaultValue[metric][settingKey]}
             />)
-        })})
+        })
+    })
 
     return (
         <div class="metric_setting_box">

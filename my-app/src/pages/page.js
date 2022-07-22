@@ -1,9 +1,7 @@
 import React from 'react';
 import Receiver from "../helpers/reciever"
-import { DEFAULT_CONFIG } from "./settings"
-import Setting, {MetricSettingsBox} from './settings'
+import { DEFAULT_CONFIG } from "../config"
 import "../helpers/graph.css"
-import Navbar from '../helpers/navbar';
 //This is the base website page, all website components inherit this page.
 export default class Page extends React.Component {
   constructor(props) {
