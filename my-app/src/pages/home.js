@@ -39,17 +39,11 @@ export default class Home extends Page {
                         Read our FAQ below
                         <div><br></br></div>
                         That doesn't help? Let us know about your issue 
-                        by submitting a ticket at: <a href="https://t.corp.amazon.com/create" target="_blank">https://t.corp.amazon.com/create</a>
+                        by opening an issue on github at: <a href="https://github.com/aws/amazon-cloudwatch-agent/issues/new/choose" target="_blank">https://github.com/aws/amazon-cloudwatch-agent/issues/new/choose</a>
                         <div>
                             <br></br>
-                            Category: AWS
-                            <br></br>
-                            Type: CloudWatch
-                            <br></br>
-                            Item: Orange Zest
-                            <div><br></br></div>
                         </div>
-                        Please include "CloudWatch Agent Performance Tracker" in the title of the ticket.
+                        Please include "CloudWatch Agent Performance Tracker" in the title of the issue.
                     </p>
                 </section>
                 <section>
