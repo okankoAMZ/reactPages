@@ -156,7 +156,7 @@ export function BasicTable(props) {
             testVariables[idx].add(value)
         })
     })
-    testVariables[1].add("all")
+    // testVariables[1].add("all")
     var buttons = []
     const [currentTestCase, setCurrentTest] = React.useState(testCases[0])
     // Avoid a layout jump when reaching the last page with empty rows.

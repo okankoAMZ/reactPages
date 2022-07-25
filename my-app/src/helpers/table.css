@@ -62,6 +62,7 @@ body{
 }
 .cell_text > a{
     text-decoration: none;
+    color: #000;
 }
 .cell_text > a:visited{
     color: inherit;
