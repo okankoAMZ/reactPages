@@ -1,8 +1,8 @@
 
 export const DEBUG = false
 export const GENERAL_ATTRIBUTES = ["Hash", "Year", "CommitDate", "isRelease"]
-export const IGNORE_ATTRIBUTES  = [...GENERAL_ATTRIBUTES,"Links","Data"]
 export const TEST_VARIABLES = ["Number of Logs","TPS"]
+export const IGNORE_ATTRIBUTES  = [...GENERAL_ATTRIBUTES,"Links","Data"]
 //Metric Specific Configs
 export const UNITS = {
     procstat_cpu_usage : "%",
@@ -34,10 +34,10 @@ export const DEFAULT_CONFIG = {
     "nLastCommits": "10",
     "metricConfig": {
         "procstat_cpu_usage": {
-            "thresholds": "0.4",
+            "thresholds": "0.0",
         },
         "procstat_memory_rss": {
-            "thresholds": "600000",
+            "thresholds": "0.0",
         }
     },
 

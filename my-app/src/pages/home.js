@@ -11,7 +11,6 @@ export default class Home extends Page {
             <div class="homepage">
                 <Navbar/>
                 <h2>CloudWatch Agent Performance Metrics</h2>
-                {/* @TODO: Add more text */}
                 <section>
                     <h3>About CloudWatch Agent Performance Tracking</h3>
                     <p>
@@ -38,8 +37,8 @@ export default class Home extends Page {
                     <p>
                         Read our FAQ below
                         <div><br></br></div>
-                        That doesn't help? Let us know about your issue 
-                        by opening an issue on github at: <a href="https://github.com/aws/amazon-cloudwatch-agent/issues/new/choose" target="_blank">https://github.com/aws/amazon-cloudwatch-agent/issues/new/choose</a>
+                        Need further assistance? Let us know about your issue 
+                        by opening an issue on github: <a href="https://github.com/aws/amazon-cloudwatch-agent/issues/new/choose" target="_blank">here</a>
                         <div>
                             <br></br>
                         </div>
@@ -69,6 +68,10 @@ export default class Home extends Page {
                          onClick={()=>{
                              this.state.Receiver.cacheClear()
                          }}>Clear Cache</button>
+                    </p>
+                    <p>
+                        Q: How can I update table and graph data and recieve most recent commits
+                        <br/>A: Refresh the page, if it still doesn't work revert to previous FAQ.
                     </p>
                 </section>
             </div>

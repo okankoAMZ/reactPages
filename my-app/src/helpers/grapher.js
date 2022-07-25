@@ -142,7 +142,7 @@ export function Graph(props){
                 {buttons}
             </div>
             <h2>{`${props.title}-${currentTestCase}`}</h2>
-            <LineChart width={800+100*size} height={300+75*size} 
+            <LineChart width={487.5+162.5*size} height={300+75*size} 
             data={props.data[currentTestCase][props.metric].slice(-props.config.nLastCommits,props.data.length)} 
             margin={{top:5,right:30}}
             style={{"overflowY":"hidden"}}>
@@ -157,7 +157,7 @@ export function Graph(props){
                     // console.log(visibility)
                 }}/>
                 <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-                <XAxis dataKey="Hash" label="Hash" height={100} tickCount={props.config.nLastCommits}
+                <XAxis dataKey="Hash" label="Commit Hash" height={100} tickCount={props.config.nLastCommits}
                 style={{fontSize: props.config.graphFontSize}}/>
                 
                 <YAxis tickCount = {6} width={100}label ={UNITS[props.title]} 

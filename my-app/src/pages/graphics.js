@@ -15,6 +15,7 @@ export default class GraphicsPage extends Page {
       <div className="GraphicsPage">
         <Navbar />
         <div class="header">
+          
               <h2>Graphs</h2>
               <p>
                 In here you can see metrics vs commit hashes on a line graph.
@@ -23,17 +24,18 @@ export default class GraphicsPage extends Page {
                 while if it is on it will be shown with a {<BsFillCircleFill />}(ON).
                 Next, if you hover over a point on the graph a tooltip will be show with more statistics; 
                 this tooltip will disappear when you move away.
-                In this webpage we have multiple settings that can be configured.
+                In addition, <strong style={{"color":"#8B008B"}} >vertical purple coloured lines </strong> represent releases of cloudwatch agent.
+                Lastly,in this webpage we have multiple settings that can be configured.
                 These settings can be configured from the right hand-side. Supported settings are as following:
                 <br/>
                 <br/>
-                <ul>
+                <ol>
                   <li>Significant Figure: Adjusts number of significant figures for the data.</li>
                   <li>Text Font Size: Changes the font size of text on the screen such as this one.</li>
                   <li>Graph Font Size: Changes the font size of the text located inside the graph.</li>
                   <li>Graph Size: Adjusts the dimensions of the graph increasing width and height.</li>
                   <li>Number of Commits: This lets you adjust last number of commits you can see</li>
-                </ul>
+                </ol>
               </p>
         </div>
         <div class="page_container">

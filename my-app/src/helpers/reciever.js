@@ -1,5 +1,5 @@
 import AWS from "aws-sdk"
-import {BATCH_SIZE,DEBUG,GENERAL_ATTRIBUTES} from "../config"
+import {DEBUG,GENERAL_ATTRIBUTES,BATCH_SIZE} from "../config"
 AWS.config.update({
   'region': 'us-west-2',
   'secretAccessKey': process.env.REACT_APP_API_KEY_SECRET,
@@ -10,20 +10,6 @@ const LATEST_ITEM = "LatestHash"
 const CWAData = "CWAData"
 const LINK = "Link"
 const REPO_LINK = "https://github.com/aws/amazon-cloudwatch-agent"
-// const DEBUG = false
-// const GENERAL_ATTRIBUTES = ["Hash", "Year", "CommitDate", "isRelease"]
-//@TODO: make this auto update
-// const N_METRIC = 2 //number of metrics
-// const N_TIMESTAMPS = 3 // number of timestamps per metric
-// //CALCULATED CONST
-// // 1 commit is # kb, so to make max 1MB batches our batches should be 
-// const ONE_MB = 1000 //KB
-// const BASE_PACKET_SIZE = 0.057 // KB per packet with no timstamp or metric
-// const TIMESTAMP_SIZE = 0.026 // KB per timestamp
-// const METRIC_SIZE = 0.154 //KB per metric with no timestamps
-// const PACKET_SIZE = (BASE_PACKET_SIZE + N_METRIC * (METRIC_SIZE + N_TIMESTAMPS * TIMESTAMP_SIZE))
-// const BATCH_SIZE = parseInt(ONE_MB / PACKET_SIZE)
-//------------------------
 //This class handles the entire frontend from pulling to formatting data
 class Receiver {
   constructor(DataBaseName) {
@@ -36,7 +22,7 @@ class Receiver {
     var date = new Date()
     this.year = date.getFullYear()
     let cacheLatestItem = this.cacheGetLatestItem()
-    if (cacheLatestItem !== undefined) {
+    if (cacheLatestItem != undefined) {
       this.CWAData = this.cacheGetAllData()
       this.latestItem = cacheLatestItem
     }
@@ -53,7 +39,7 @@ class Receiver {
       // ask dynamo what is the lastest hash it received 
       let cacheLatestItem = this.cacheGetLatestItem()//["Hash"].S //rename to lastest hash
       let cacheLatestHash = ""
-      if (cacheLatestItem === undefined) {
+      if (cacheLatestItem == undefined) {
         console.log("NO cache found", localStorage.key(0), localStorage.key(1))
         // no cache found, pull every thing and set
         this.CWAData = await this.getAllItems()
@@ -65,7 +51,7 @@ class Receiver {
         cacheLatestHash = cacheLatestItem["Hash"]
         this.CWAData = this.cacheGetAllData()
       }
-      if (DynamoHash === cacheLatestHash) {
+      if (DynamoHash == cacheLatestHash) {
         console.log("synced") // synced up
       } else if (parseInt(dynamoLatestItem["CommitDate"]) >= parseInt(cacheLatestItem["CommitDate"])) {
         /// if hashes dont match call getBatchItem with local hash and update local hash with new data
@@ -73,13 +59,13 @@ class Receiver {
         var newItems = await this.getBatchItem(cacheLatestItem["CommitDate"], dynamoLatestItem["CommitDate"])
         console.log(this.CWAData, newItems)
         Object.keys(newItems).forEach((key)=>{
-          if(this.CWAData[key]=== undefined){
+          if(this.CWAData[key]== undefined){
             // new testCase
             this.CWAData[key]={}
           }
           //already have this testCase
           Object.keys(this.CWAData[key]).forEach((metric)=>{
-            if(this.CWAData[key][metric]=== undefined){
+            if(this.CWAData[key][metric]== undefined){
               // new metric
               this.CWAData[key][metric] = []
             }
@@ -95,7 +81,7 @@ class Receiver {
     catch (err) {
       console.log(`ERROR:${err}`)
       alert(`ERROR:${err}`)
-      if (this.cacheGetLatestItem === undefined) {
+      if (this.cacheGetLatestItem == undefined) {
         return {}
       }
       return this.cacheGetAllData()
@@ -181,7 +167,7 @@ class Receiver {
     var dynamoHashDateInt = parseInt(dynamoHashDate)
     var cacheHashDateInt = parseInt(cacheHashDate)
     var upperBound = 0
-    var i = 0;
+    var i = 1;
     console.log(BATCH_SIZE)
     while (upperBound < dynamoHashDateInt) { //get data in 1mb packets
       var lowerBound = cacheHashDateInt + (i * BATCH_SIZE)
@@ -205,17 +191,17 @@ class Receiver {
     data.forEach((item) => {
       var cleanData = AWS.DynamoDB.Converter.unmarshall(item)
       Object.keys(cleanData["Results"]).forEach(testCase => {
-        if (formattedData[testCase] === undefined) {
+        if (formattedData[testCase] == undefined) {
           formattedData[testCase] = {}
         }
         Object.keys(cleanData["Results"][testCase]).forEach(metric=>{
           // debugger
-          if (formattedData[testCase][metric] === undefined) {
+          if (formattedData[testCase][metric] == undefined) {
             formattedData[testCase][metric] = []
           }
           var newStructure = cleanData["Results"][testCase][metric]
           GENERAL_ATTRIBUTES.forEach((generalAttribute) => {
-            if (generalAttribute === "Hash") {
+            if (generalAttribute == "Hash") {
               if (cleanData[generalAttribute].length > 7) {
                 // debugger;
                 newStructure[generalAttribute] = cleanData[generalAttribute].substring(0, 7)
