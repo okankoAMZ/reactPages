@@ -3,15 +3,14 @@ body{
     --h2fontSize: 20px;
     --h3fontSize: 16px
 }
-
 .wiki_page {
     text-align: center;
     list-style-type: circle;
 }
 .wiki_page section{
     margin: 1%;
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 5%;
+    margin-right: 5%;
     margin-top: 2%;
     text-align: left;
 }
@@ -33,4 +32,39 @@ body{
 .wiki_page p{
     padding: 0.5%;
     font-size: var(--fontSize);
+}
+
+.container{
+    display: flex;
+}
+.index{
+    flex: 15%;
+    border-right: 1px solid #000;
+    justify-content: center;
+    /* margin-top: 3%; */
+    width: 10%;
+    padding: 4%;
+    font-size: large;
+}
+.index .static{
+    left: 0px;
+    top: 22%;
+    position: fixed;
+}
+.index ul{
+    text-align: left;
+}
+.index li{
+    list-style-type: disc;
+    padding: 3%;
+    width: 100%;
+}
+.index li:hover{
+    color: blue;
+
+}
+
+.content{
+    flex:90%;
+    position: relative;
 }

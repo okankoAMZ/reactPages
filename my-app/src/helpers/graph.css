@@ -12,6 +12,7 @@ body{
     margin-bottom: 5%;
     padding: 1%;
     overflow-y: hidden;
+    overflow-x: hidden;
 }
 .graph .button_container{
     display: flex;
@@ -64,15 +65,19 @@ body{
 .page_container{
     display: flex;
 }
-.content{
-    flex: 50%;
-    width: 90%;
+.graph_content{
+    /* flex: 50%; */
+    width: 80%;
+    position: relative;
+    left: 0px;
 }
-.settings{
-    flex:25%;
-    width: 50%;
-    border-left: 1px dashed #000;
+.graph_settings{
+    /* flex:30%; */
+    width: 28%;
+    /* height: 100%; */
+    border-left: 1px solid#000;
     margin: 0.5%;
+
 }
 .GraphicsPage .header{
     margin: 5%;
@@ -86,7 +91,7 @@ body{
 .GraphicsPage p{
     text-align: justify;
     font-size: var(--textFontSize);
-    margin: 15%;
+    margin: 5%;
     margin-top: 2%;
     margin-bottom: 2%;
 }

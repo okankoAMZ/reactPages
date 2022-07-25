@@ -1,7 +1,8 @@
 import './settings.css'
-import {MetricConfigs} from "../config"
+import {MetricConfigs,TEST_VARIABLES } from "../config"
 const CONFIG = "config"
 const METRIC_CONFIG_KEY = "metricConfig"
+const TABLE_CONFIG_KEY = "tableConfig"
 
 function loadSetting(settingTag) {
     var config = JSON.parse(localStorage.getItem(CONFIG))
@@ -107,3 +108,4 @@ export function MetricSettingsBox(props) {
         </div>
     )
 }
+

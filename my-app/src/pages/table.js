@@ -18,26 +18,26 @@ export default class TablePage extends Page {
         return (
             <div className="table_page">
                 <Navbar />
-                <div class="header">
-                    <h2>Table Page</h2>
-                    <p>
-                        In here you can see metrics and their statistics in a table format.
-                        In this webpage we have multiple settings that can be configured.
-                        These settings can be configured from the right hand-side. Supported settings are as following:
-                        <br />
-                        <br />
-                        <ul>
-                            <li>Significant Figure: Adjusts number of significant figures for the data.</li>
-                            <li>Text Font Size: Changes the font size of text on the screen such as this one.</li>
-                            <li>Table Font Size: Changes the font size of the text located inside the graph.</li>
-                        </ul>
-                    </p>
-                </div>
                 <div class="page_container">
-                    <div class="content">
-                        <TableGroup data={this.state.data} config={this.state.config}/>
+                    <div class="table_content">
+                        <div class="header">
+                            <h2>Table Page</h2>
+                            <p>
+                                In here you can see metrics and their statistics in a table format.
+                                In this webpage we have multiple settings that can be configured.
+                                These settings can be configured from the right hand-side. Supported settings are as following:
+                                <br />
+                                <br />
+                                <ul>
+                                    <li>Significant Figure: Adjusts number of significant figures for the data.</li>
+                                    <li>Text Font Size: Changes the font size of text on the screen such as this one.</li>
+                                    <li>Table Font Size: Changes the font size of the text located inside the graph.</li>
+                                </ul>
+                            </p>
+                        </div>
+                        <TableGroup data={this.state.data} config={this.state.config} />
                     </div>
-                    <div class="settings" onChange={console.log("changed")}>
+                    <div class="table_settings" onChange={console.log("changed")}>
                         <div class="settings_page">
                             <div class="title">
                                 <h2>Settings</h2>
