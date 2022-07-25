@@ -21,6 +21,8 @@ import "./table.css"
 import {IGNORE_ATTRIBUTES,UNITS} from "../config"
 //@TODO ADD UNITS TO TABLE HEADERS
 const MIN_COLOUR = 0x50
+
+
 function getRandomColour(idx){
   var colours = [MIN_COLOUR, MIN_COLOUR,MIN_COLOUR]
   colours[idx%2] =0xCC
@@ -52,6 +54,8 @@ function TablePaginationActions(props) {
       onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
     };
   
+    
+
     return (
       <Box sx={{ flexShrink: 0, ml: 2.5 }}>
         <IconButton
@@ -94,26 +98,48 @@ TablePaginationActions.propTypes = {
 };
   
 
-function CreateRow(data,sigfig) {
-    var line = []
-    console.log(data["Hash"])
-    line.push(<TableCell class="cell_text"><a href={data["Link"]} target="_blank">
-      {data["Hash"]}</a></TableCell>);
-    var date = new Date(data["CommitDate"] *1000)
-    line.push(<TableCell class="cell_text">{date.toUTCString()}</TableCell>);
-    // line.push(<TableCell class="cell_text">{data["Year"]}</TableCell>);
+function CreateRow(props,sigfig,logNum,tps,index) {
 
-    for (var metric in data) {
-        if (metric == "Data" || metric == "Hash" || metric == "CommitDate" || metric == "Year" ||metric == "Link") {
-            continue;
-        }
-        line.push(<TableCell class="cell_text">{data[metric].toPrecision(sigfig)}</TableCell>);
+    var line = []
+    var testMetrics = props.data[Object.keys(props.data)[0]]
+    var currMetric = testMetrics[props.metric]
+    if (index >= currMetric.length) {
+        return []
     }
+
+    var currEntry = currMetric[index]
+
+    line.push(<TableCell class="cell_text"><a href={currEntry["Link"]} target="_blank">
+      {currEntry["Hash"]}</a></TableCell>);
+
+    var date = new Date(currEntry["CommitDate"] *1000)
+    line.push(<TableCell class="cell_text">{date.toUTCString()}</TableCell>);
+
+    
+    var testCases = Object.keys(props.data)
+
+    for (let j = 0; j < testCases.length; j++) {
+        let testOptions = testCases[j].split("-")
+        if (testOptions[0] == logNum) {
+            if (tps == "all" || testOptions[1] == tps) {
+                let testMetric = props.data[testCases[j]][props.metric]
+                //add line with contained data
+                for (let metric in testMetric[index]) {
+                    if (IGNORE_ATTRIBUTES.includes(metric) || metric == "Period") {
+                        continue;
+                    }
+                    line.push(<TableCell class="cell_text">{testMetric[index][metric].toPrecision(sigfig)}</TableCell>)
+                }
+            }
+        }
+    }
+
     return line;
 }
 
 export function BasicTable(props) {
   // debugger;
+    //console.log(props.data)
     document.body.style.setProperty("--tablefontSize",parseInt(props.config.tableFontSize).toString()+"px")
     var metricNames = []
     var metricData = []
@@ -124,6 +150,10 @@ export function BasicTable(props) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const [logNum, setLogNum] = React.useState("10")
+    const [tps, setTps] = React.useState("all")
+
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.data.length) : 0;
@@ -137,35 +167,131 @@ export function BasicTable(props) {
         setPage(0);
     };
 
+    var headerLength = tps == "all" ? 3 : 1
+    var testMetrics = props.data[Object.keys(props.data)[0]]
+    var currMetric = testMetrics[props.metric]
 
-    
+    for (let i = 0; i < headerLength; i++) {
+        for (var metric in currMetric[0]){
 
-    for (var metric in props.data[0]){
-        if (IGNORE_ATTRIBUTES.includes(metric)) {
-            continue;
+            if (IGNORE_ATTRIBUTES.includes(metric) || metric == "Period") {
+                continue;
+            }
+
+            metricNames.push(<TableCell class="cell_text head">{`${metric} (${UNITS[props.metric]})`}</TableCell>)
+        }
+    }
+
+
+    metricNames.push(<TableCell class="cell_text head">Test Selection</TableCell>)
+
+    var labelHeaderClass = tps == "all" ? "table_labels" : "table_labels_hidden"
+
+    var rows = []
+
+    for (let i = page * rowsPerPage; i < page * rowsPerPage + rowsPerPage; i++) {
+        var testMetrics = props.data[Object.keys(props.data)[0]]
+        var currMetric = testMetrics[props.metric]
+        if (i >= currMetric.length) {
+            break
         }
 
-        metricNames.push(<TableCell class="cell_text head">{`${metric} (${UNITS[props.title]})`}</TableCell>)
+        let line = CreateRow(props, sigfig, logNum, tps, i)
+
+        if (i == 0) {
+            var options = ["10", "100", "1000"]
+            var selectOptions = []
+            options.forEach(entry => {
+                selectOptions.push(<option>{entry}</option>)
+            })
+            var label = <label>Log Number</label>
+            var br = <br></br>
+            var input = <select onChange = {event => setLogNum(event.target.value)}>{selectOptions}</select>
+            var testSelection = [label, br, input]
+            line.push(<TableCell>{testSelection}</TableCell>)
+        } else if (i == 1) {
+            var options = ["all", "10", "100", "1000"]
+            var selectOptions = []
+            options.forEach(entry => {
+                selectOptions.push(<option>{entry}</option>)
+            })
+            var label = <label>TPS</label>
+            var br = <br></br>
+            var input = <select onChange = {event => setTps(event.target.value)}>{selectOptions}</select>
+            var testSelection = [label, br, input]
+            line.push(<TableCell>{testSelection}</TableCell>)
+        } else {
+            line.push(<TableCell></TableCell>)
+        }
+        
+        if (currMetric[i].isRelease) {
+            rows.push(<TableRow style ={{background : "#896799" }}>{line}</TableRow>)
+        } else {
+            rows.push(<TableRow style ={ i % 2 ? {background : "#dddddd" } : { background: "white" }}>{line}</TableRow>)
+        }
     }
+
     return(
         <Container class="table_container">
             <h2>{props.title}</h2>
             <TableContainer component={Paper}>
                 <Table aria-label="data table" class="table">
+                  
                     <TableHead>
+                        <TableRow class={labelHeaderClass}>
+                            <TableCell align="center" colSpan={2}>
+                                Agent Info
+                            </TableCell>
+                            <TableCell align="center" colSpan={5}>
+                                Low
+                            </TableCell>
+                            <TableCell align="center" colSpan={5}>
+                                Medium
+                            </TableCell>
+                            <TableCell align="center" colSpan={5}>
+                                High
+                            </TableCell>
+                        </TableRow>
                         <TableRow style={{background:getRandomColour(props.idx), "textAlign": "center"}}>
                             {metricNames}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {/* {metricData} */}
-                        {(rowsPerPage > 0
+                        {/* {(rowsPerPage > 0
                             ? props.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             : props.data
-                        ).map((row, index) => (
-                            
-                            <TableRow style ={ index % 2 ? {background : "#dddddd" } : { background: "white" }}>{CreateRow(row,sigfig)}</TableRow>
-                        ))}
+                        ).map((row, index) => {
+                            var line = CreateRow(row,sigfig,logNum,tps)
+                            if (index == 0) {
+                                var options = ["10", "100", "1000"]
+                                var selectOptions = []
+                                options.forEach(entry => {
+                                    selectOptions.push(<option>{entry}</option>)
+                                })
+                                var label = <label>Log Number</label>
+                                var br = <br></br>
+                                var input = <select onChange = {event => setLogNum(event.target.value)}>{selectOptions}</select>
+                                var testSelection = [label, br, input]
+                                line.push(<TableCell>{testSelection}</TableCell>)
+                            } else if (index == 1) {
+                                var options = ["all", "10", "100", "1000"]
+                                var selectOptions = []
+                                options.forEach(entry => {
+                                    selectOptions.push(<option>{entry}</option>)
+                                })
+                                var label = <label>TPS</label>
+                                var br = <br></br>
+                                var input = <select onChange = {event => setTps(event.target.value)}>{selectOptions}</select>
+                                var testSelection = [label, br, input]
+                                line.push(<TableCell>{testSelection}</TableCell>)
+                            } else {
+                                line.push(<TableCell></TableCell>)
+                            }
+                            return <TableRow style ={ index % 2 ? {background : "#dddddd" } : { background: "white" }}>{line}</TableRow>
+                        }
+                        )} */}
+                        {rows}
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>
                             <TableCell colSpan={6} />
@@ -200,20 +326,29 @@ export function BasicTable(props) {
 
 
 export default function TableGroup(props){
-  var metrics = Object.keys(props.data)
-  var tables = []
-  var j =0
-  if (props.data == undefined){
-    return
-  }
-  metrics.forEach(element => {
-      tables.push(<BasicTable data={props.data[element]} idx={j}
-         title={element}  config={props.config}/>) // Add a graph
-      j++;
-  })
-  return (
-      <div id="TableArea" class="table_group">
-          {tables}
-      </div>
-  )
+
+    if(props.data === undefined){
+        return
+    }
+    
+    var testCase = props.data[Object.keys(props.data)[0]]
+    if( testCase === undefined){
+        return
+
+    }
+    var metrics = Object.keys(testCase)
+    var tables = []
+    var j=0;
+    metrics.forEach(element => {
+        tables.push(<BasicTable metric={element} data={props.data} idx = {j} title={element} 
+        config={props.config}/>)
+
+        j++;
+    })
+    return (
+        <div id="TableArea" class="table_group">
+            {tables}
+        </div>
+    )
+    
 }

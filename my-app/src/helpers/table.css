@@ -4,6 +4,12 @@ body{
     --textFontSize: 12px;
     --headTextFontSize: 16px
 }
+.table_labels{
+    display:default;
+}
+.table_labels_hidden{
+    display:none;
+}
 .table_page{
     text-align: center;
     justify-content: center;

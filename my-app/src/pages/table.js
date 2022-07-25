@@ -1,17 +1,20 @@
 import Page from "./page"
-import Navbar from '../helpers/navbar';
+import Navbar from '../helpers/navbar'
 import TableGroup from '../helpers/BasicTable'
 import Setting from './settings'
 import '../helpers/table.css'
+
+
 //This the webpage that contains the metric tables.
 export default class TablePage extends Page {
 
     render() {
         document.body.style.setProperty("--tableFontSize", (parseInt(this.state.config.tableFontSize)).toString() + "px")
-        document.body.style.setProperty("--headTableFontSize", (parseInt(this.state.config.tablefontSize)+4).toString() + "px")
+        document.body.style.setProperty("--headTableFontSize", (parseInt(this.state.config.tablefontSize) + 4).toString() + "px")
         document.body.style.setProperty("--textFontSize", (parseInt(this.state.config.textFontSize)).toString() + "px")
-        document.body.style.setProperty("--headTextFontSize", (parseInt(this.state.config.textFontSize)+4).toString() + "px")
-        
+        document.body.style.setProperty("--headTextFontSize", (parseInt(this.state.config.textFontSize) + 4).toString() + "px")
+
+
         return (
             <div className="table_page">
                 <Navbar />
@@ -32,7 +35,7 @@ export default class TablePage extends Page {
                 </div>
                 <div class="page_container">
                     <div class="content">
-                        {/* <TableGroup data={this.state.data} config={this.state.config} /> */}
+                        <TableGroup data={this.state.data} config={this.state.config}/>
                     </div>
                     <div class="settings" onChange={console.log("changed")}>
                         <div class="settings_page">
@@ -42,11 +45,8 @@ export default class TablePage extends Page {
                             <br></br>
                             <div class="setting_box">
                                 <Setting title="Significant Figure" settingKey="sigfig" type="select" range={[2, 8, 1, '']} page={this} />
-                                <Setting title="Text Font Size" settingKey="textFontSize" type="select" range={[8,32,4,'px']}page={this}/>
+                                <Setting title="Text Font Size" settingKey="textFontSize" type="select" range={[8, 32, 4, 'px']} page={this} />
                                 <Setting title="Table Font Size" settingKey="tableFontSize" type="select" range={[8, 32, 4, 'px']} page={this} />
-                                
-                                <h2 style={{"padding-top" : "10%"}}>Test Data</h2>
-                                
                             </div>
                         </div>
                     </div>
