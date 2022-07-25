@@ -72,7 +72,7 @@ body{
     margin-bottom: 2%;
     padding: 3%;
 }
-.table_footer{
+/* .table_footer{
     width: 100%; 
     margin: 0%;
     left: 0px;
@@ -84,7 +84,7 @@ body{
     width: 73%;
     margin: 0%;
     position: absolute;
-}
+} */
 
 .page_container{
     display: flex;

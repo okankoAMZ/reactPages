@@ -24,6 +24,7 @@ export default class TablePage extends Page {
                             <h2>Table Page</h2>
                             <p>
                                 In here you can see metrics and their statistics in a table format.
+                                Official agent releases are highlighted by coloring the release commit row purple.
                                 In this webpage we have multiple settings that can be configured.
                                 These settings can be configured from the right hand-side. Supported settings are as following:
                                 <br />

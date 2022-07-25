@@ -134,7 +134,6 @@ export function BasicTable(props) {
     //console.log(props.data)
     document.body.style.setProperty("--tablefontSize", parseInt(props.config.tableFontSize).toString() + "px")
     var metricNames = []
-    var metricData = []
     var sigfig = parseInt(props.config.sigfig)
     metricNames.push(<TableCell class="cell_text head">{"Hash"}</TableCell>)
     metricNames.push(<TableCell class="cell_text head">{"CommitDate"}</TableCell>)
@@ -304,8 +303,8 @@ export function BasicTable(props) {
                         <TableRow>
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                colSpan={metricData.length}
-                                count={metricData.length}
+                                colSpan={metricNames.length}
+                                count={metricNames.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{
