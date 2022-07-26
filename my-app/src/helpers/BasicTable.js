@@ -98,7 +98,7 @@ TablePaginationActions.propTypes = {
 };
 
 
-function CreateRow(props, sigfig, currentTestCase, index) {
+function CreateRow(props, sigfig, currentTestCase, index, rowLength) {
 
     var line = []
     var testMetrics = props.data[Object.keys(props.data)[0]]
@@ -117,15 +117,36 @@ function CreateRow(props, sigfig, currentTestCase, index) {
 
 
     // var testCases = Object.keys(props.data)
-    let testMetric = props.data[currentTestCase][props.metric]
-    //add line with contained data
-    for (let metric in testMetric[index]) {
-        if (IGNORE_ATTRIBUTES.includes(metric) || metric == "Period") {
-            continue;
+    if (currentTestCase.split("-")[1] == "all") {
+        let testCaseList = Object.keys(props.data)
+        let selectedLogNum = currentTestCase.split("-")[0]
+        for (let i = 0; i < testCaseList.length; i++) {
+            let testCaseOption = testCaseList[i].split("-")
+            if (testCaseOption[0] == selectedLogNum) {
+                let testMetric = props.data[testCaseList[i]][props.metric]
+                for (let metric in testMetric[index]) {
+                    if (IGNORE_ATTRIBUTES.includes(metric) || metric == "Period") {
+                        continue;
+                    }
+                    line.push(<TableCell class="cell_text">{testMetric[index][metric].toPrecision(sigfig)}</TableCell>)
+                }
+            }
         }
-        line.push(<TableCell class="cell_text">{testMetric[index][metric].toPrecision(sigfig)}</TableCell>)
+    } else {
+        let testMetric = props.data[currentTestCase][props.metric]
+        //add line with contained data
+        for (let metric in testMetric[index]) {
+            if (IGNORE_ATTRIBUTES.includes(metric) || metric == "Period") {
+                continue;
+            }
+            line.push(<TableCell class="cell_text">{testMetric[index][metric].toPrecision(sigfig)}</TableCell>)
+        }
     }
 
+    //fill in empty cells to ensure line is same length as table
+    while (line.length < rowLength) {
+        line.push(<TableCell class="cell_text"></TableCell>)
+    }
     return line;
 }
 
@@ -141,9 +162,6 @@ export function BasicTable(props) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-    const [logNum, setLogNum] = React.useState("10")
-    const [tps, setTps] = React.useState("all")
 
     var testCases = Object.keys(props.data)
     var testVariables = Array((testCases[0].split("-")).length) //map[string]Set
@@ -178,12 +196,16 @@ export function BasicTable(props) {
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - currMetric.length) : 0;
 
     testVariables.forEach((varSet, i) => {
-        //console.log(varSet, varSet.values);
+
         var options = []
         {
             varSet.forEach((value) => {
                 options.push(<option>{value}</option>)
             })
+
+            if (TEST_VARIABLES[i] == "TPS") {
+                options.push(<option>all</option>)
+            }
         }
         buttons.push(
             <div class="select_box">
@@ -204,7 +226,9 @@ export function BasicTable(props) {
                 >{options}</select>
             </div>)
     })
-    for (let i = 0; i < 1; i++) {
+
+    var columnHeaders = currentTestCase.split("-")[1] == "all" ? 3 : 1
+    for (let i = 0; i < columnHeaders; i++) {
         for (var metric in currMetric[0]) {
 
             if (IGNORE_ATTRIBUTES.includes(metric) || metric == "Period") {
@@ -218,7 +242,7 @@ export function BasicTable(props) {
 
     // metricNames.push(<TableCell class="cell_text head">Test Selection</TableCell>)
 
-    var labelHeaderClass = tps == "all" ? "table_labels" : "table_labels_hidden"
+    var labelHeaderClass = columnHeaders == 3 ? "table_labels" : "table_labels_hidden"
 
     var rows = []
 
@@ -229,33 +253,7 @@ export function BasicTable(props) {
             break
         }
 
-        let line = CreateRow(props, sigfig, currentTestCase, i)
-
-        // if (i == 0) {
-        //     var options = ["10", "100", "1000"]
-        //     var selectOptions = []
-        //     options.forEach(entry => {
-        //         selectOptions.push(<option>{entry}</option>)
-        //     })
-        //     var label = <label>Log Number</label>
-        //     var br = <br></br>
-        //     var input = <select onChange = {event => setLogNum(event.target.value)}>{selectOptions}</select>
-        //     var testSelection = [label, br, input]
-        //     line.push(<TableCell>{testSelection}</TableCell>)
-        // } else if (i == 1) {
-        //     var options = ["all", "10", "100", "1000"]
-        //     var selectOptions = []
-        //     options.forEach(entry => {
-        //         selectOptions.push(<option>{entry}</option>)
-        //     })
-        //     var label = <label>TPS</label>
-        //     var br = <br></br>
-        //     var input = <select onChange = {event => setTps(event.target.value)}>{selectOptions}</select>
-        //     var testSelection = [label, br, input]
-        //     line.push(<TableCell>{testSelection}</TableCell>)
-        // } else {
-        //     line.push(<TableCell></TableCell>)
-        // }
+        let line = CreateRow(props, sigfig, currentTestCase, i, metricNames.length)
 
         if (currMetric[i].isRelease) {
             rows.push(<TableRow style={{ background: "#896799" }}>{line}</TableRow>)
@@ -274,7 +272,7 @@ export function BasicTable(props) {
                 <Table aria-label="data table" class="table">
 
                     <TableHead>
-                        {/* <TableRow class={labelHeaderClass}>
+                        <TableRow class={labelHeaderClass}>
                             <TableCell align="center" colSpan={2}>
                                 Agent Info
                             </TableCell>
@@ -287,7 +285,7 @@ export function BasicTable(props) {
                             <TableCell align="center" colSpan={5}>
                                 High
                             </TableCell>
-                        </TableRow> */}
+                        </TableRow>
                         <TableRow style={{ background: getRandomColour(props.idx), "textAlign": "center" }}>
                             {metricNames}
                         </TableRow>
