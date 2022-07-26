@@ -159,8 +159,7 @@ export function BasicTable(props) {
     var buttons = []
     const [currentTestCase, setCurrentTest] = React.useState(testCases[0])
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.data.length) : 0;
+    
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -174,9 +173,12 @@ export function BasicTable(props) {
     // var headerLength = tps == "all" ? 3 : 1
     var testMetrics = props.data[Object.keys(props.data)[0]]
     var currMetric = testMetrics[props.metric]
+    
+    const emptyRows = 
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - currMetric.length) : 0;
 
     testVariables.forEach((varSet, i) => {
-        console.log(varSet, varSet.values);
+        //console.log(varSet, varSet.values);
         var options = []
         {
             varSet.forEach((value) => {
@@ -196,7 +198,7 @@ export function BasicTable(props) {
                                 testCase += "-"
                             }
                         }
-                        console.log(testCase)
+                        //console.log(testCase)
                         setCurrentTest(testCase)
                     }}
                 >{options}</select>
@@ -304,7 +306,7 @@ export function BasicTable(props) {
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                                 colSpan={metricNames.length}
-                                count={metricNames.length}
+                                count={currMetric.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{
