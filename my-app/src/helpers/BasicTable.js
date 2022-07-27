@@ -207,15 +207,17 @@ export function BasicTable(props) {
                 options.push(<option>all</option>)
             }
         }
+        var id = `testCase-${props.title}-${i}`
         buttons.push(
             <div class="select_box">
                 <label>{TEST_VARIABLES[i]}</label>
-                <select id={`testCase${i}`}
+                <select id={id} //@ID IS NOT DISCTINC ENOUGH, for both tables ids are the same
                     onChange={() => {
+                        // debugger;
                         var testCase = ""
                         var n_variables = testVariables.length
                         for (var j = 0; j < n_variables; j++) {
-                            testCase += document.getElementById(`testCase${j}`).value
+                            testCase += document.getElementById(id).value
                             if (j < n_variables - 1) {
                                 testCase += "-"
                             }
