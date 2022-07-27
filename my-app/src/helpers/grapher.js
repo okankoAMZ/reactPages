@@ -31,7 +31,6 @@ function getRandomColour(seed,idx) {
     for(var i =0; i< 3; i++){
         colour += ((coloursOptions[i]).toString(16).slice(-2))
     }
-    // console.log("Colour", colour,seed)
 
     return colour
 }
@@ -103,7 +102,6 @@ export function Graph(props){
             label="Threshold" stroke="blue" strokeDasharray="10 10" />) //Add a threshold line
     }
     testVariables.forEach((varSet,i)=>{
-        console.log(varSet,varSet.values);
         var options = []
         {varSet.forEach((value)=>{
             options.push(<option>{value}</option>)
@@ -122,7 +120,6 @@ export function Graph(props){
                         testCase+="-"
                     }
                 }
-                console.log(testCase)
                 setCurrentTest(testCase)
             }}
             >{options}</select>
@@ -136,7 +133,7 @@ export function Graph(props){
         }
     })
     var size = parseInt(props.config.graphSize)
-    console.log(props.data[currentTestCase][props.metric])
+    
     return (
         <div class="graph">
             <div class="button_container">
@@ -152,10 +149,8 @@ export function Graph(props){
                 <CustomToolTip config={props.config}/>
                 }/>
                 <Legend verticalAlign="top" onClick={(data)=>{
-                    // console.log("clicked",data,visibility)
                     var lastVisibility = visibility[data["dataKey"]]
                     setVisibility({...visibility,[data["dataKey"]]:!lastVisibility})
-                    // console.log(visibility)
                 }}/>
                 <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
                 <XAxis dataKey="Hash" label="Commit Hash" height={100} tickCount={props.config.nLastCommits}

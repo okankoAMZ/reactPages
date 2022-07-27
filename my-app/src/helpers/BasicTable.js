@@ -31,7 +31,7 @@ function getRandomColour(idx) {
     for (var i = 0; i < colours.length; i++) {
         stringColour += colours[i].toString(16)
     }
-    // console.log(stringColour)
+
     return stringColour
 }
 function TablePaginationActions(props) {
@@ -115,8 +115,6 @@ function CreateRow(props, sigfig, currentTestCase, index, rowLength) {
     var date = new Date(currEntry["CommitDate"] * 1000)
     line.push(<TableCell class="cell_text">{date.toUTCString()}</TableCell>);
 
-
-    // var testCases = Object.keys(props.data)
     if (currentTestCase.split("-")[1] == "all") {
         let testCaseList = Object.keys(props.data)
         let selectedLogNum = currentTestCase.split("-")[0]
@@ -151,32 +149,34 @@ function CreateRow(props, sigfig, currentTestCase, index, rowLength) {
 }
 
 export function BasicTable(props) {
-    // debugger;
-    //console.log(props.data)
+
     document.body.style.setProperty("--tablefontSize", parseInt(props.config.tableFontSize).toString() + "px")
     var metricNames = []
     var sigfig = parseInt(props.config.sigfig)
     metricNames.push(<TableCell class="cell_text head">{"Hash"}</TableCell>)
     metricNames.push(<TableCell class="cell_text head">{"CommitDate"}</TableCell>)
-    // metricNames.push(<TableCell class="cell_text head">{"Year"}</TableCell>)
+
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     var testCases = Object.keys(props.data)
-    var testVariables = Array((testCases[0].split("-")).length) //map[string]Set
+    var testVariables = Array((testCases[0].split("-")).length)
+    
     testCases.forEach((test) => {
         test.split("-").forEach((value, idx) => {
             if (testVariables[idx] === undefined) {
-                testVariables[idx] = new Set()
+                testVariables[idx] = []
             }
-            testVariables[idx].add(value)
+
+            if (!testVariables[idx].includes(value)) {
+                testVariables[idx].push(value)
+                testVariables[idx].sort()
+            }
         })
     })
-    // testVariables[1].add("all")
     var buttons = []
     const [currentTestCase, setCurrentTest] = React.useState(testCases[0])
-    // Avoid a layout jump when reaching the last page with empty rows.
     
 
     const handleChangePage = (event, newPage) => {
@@ -188,12 +188,14 @@ export function BasicTable(props) {
         setPage(0);
     };
 
-    // var headerLength = tps == "all" ? 3 : 1
+
     var testMetrics = props.data[Object.keys(props.data)[0]]
     var currMetric = testMetrics[props.metric]
     
+    // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = 
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - currMetric.length) : 0;
+    
 
     testVariables.forEach((varSet, i) => {
 
@@ -211,19 +213,17 @@ export function BasicTable(props) {
         buttons.push(
             <div class="select_box">
                 <label>{TEST_VARIABLES[i]}</label>
-                <select id={id} //@ID IS NOT DISCTINC ENOUGH, for both tables ids are the same
+                <select id={`testCase${props.title}-${i}`}
                     onChange={() => {
-                        // debugger;
                         var testCase = ""
                         var n_variables = testVariables.length
                         for (var j = 0; j < n_variables; j++) {
-                            testCase += document.getElementById(id).value
+                            testCase += document.getElementById(`testCase${props.title}-${j}`).value
                             if (j < n_variables - 1) {
                                 testCase += "-"
                             }
                         }
-                        //console.log(testCase)
-                        setCurrentTest(testCase)
+                        setCurrentTest(testCase)                
                     }}
                 >{options}</select>
             </div>)
@@ -240,9 +240,6 @@ export function BasicTable(props) {
             metricNames.push(<TableCell class="cell_text head">{`${metric} (${UNITS[props.metric]})`}</TableCell>)
         }
     }
-
-
-    // metricNames.push(<TableCell class="cell_text head">Test Selection</TableCell>)
 
     var labelHeaderClass = columnHeaders == 3 ? "table_labels" : "table_labels_hidden"
 
@@ -293,7 +290,6 @@ export function BasicTable(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-
                         {rows}
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>
@@ -304,7 +300,7 @@ export function BasicTable(props) {
                     <TableFooter class="table_footer">
                         <TableRow>
                             <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                                rowsPerPageOptions={[5, 10, 25]}
                                 colSpan={metricNames.length}
                                 count={currMetric.length}
                                 rowsPerPage={rowsPerPage}

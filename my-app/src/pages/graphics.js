@@ -42,7 +42,7 @@ export default class GraphicsPage extends Page {
             </div>
             <Grapher data={this.state.data} config={this.state.config} />
           </div>
-          <div class="graph_settings" onChange={console.log("changed")}>
+          <div class="graph_settings">
             <div class="settings_page">
               <div class="title">
                 <h2>Settings</h2>

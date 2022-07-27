@@ -21,7 +21,6 @@ export default class Page extends React.Component {
         localStorage.setItem("config", JSON.stringify(this.state.config))
       }
       this.state.Receiver.update().then(() => {
-        console.log(this.state.Receiver.CWAData, typeof (this.state.Receiver.CWAData))
         this.setState({ data: this.state.Receiver.CWAData })
 
       })

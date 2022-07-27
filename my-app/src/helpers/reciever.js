@@ -74,7 +74,6 @@ class Receiver {
           })
         })
         this.latestItem = dynamoLatestItem
-        // console.log(this.latestItem)
         this.cacheSaveData()
       }
     }
@@ -114,7 +113,6 @@ class Receiver {
     var cleanData = AWS.DynamoDB.Converter.unmarshall(retData.Items[0])
     cleanData["Hash"] = cleanData["Hash"].substring(0, 7)
     return cleanData
-    // return this.latestItem
   }
   // get all
   //@TODO Add interface
@@ -186,7 +184,6 @@ class Receiver {
   }
   //@TODO Add interface
   formatData(data) {
-    // debugger;
     var formattedData = {}
     data.forEach((item) => {
       var cleanData = AWS.DynamoDB.Converter.unmarshall(item)
@@ -195,7 +192,6 @@ class Receiver {
           formattedData[testCase] = {}
         }
         Object.keys(cleanData["Results"][testCase]).forEach(metric=>{
-          // debugger
           if (formattedData[testCase][metric] == undefined) {
             formattedData[testCase][metric] = []
           }
@@ -203,7 +199,6 @@ class Receiver {
           GENERAL_ATTRIBUTES.forEach((generalAttribute) => {
             if (generalAttribute == "Hash") {
               if (cleanData[generalAttribute].length > 7) {
-                // debugger;
                 newStructure[generalAttribute] = cleanData[generalAttribute].substring(0, 7)
                 newStructure[LINK] = `${REPO_LINK}/commit/${cleanData[generalAttribute]}`
                 return
@@ -211,14 +206,12 @@ class Receiver {
             }
             newStructure[generalAttribute] = cleanData[generalAttribute]
           })
-          // console.log("DATA",newStructure)
           formattedData[testCase][metric].push(newStructure)
           
         })
       })
 
     })
-    // console.log("Formmated Data:",formattedData)
     return formattedData
 
   }
@@ -240,7 +233,6 @@ cacheSaveData() {
   }
   localStorage.setItem(LATEST_ITEM, JSON.stringify(this.latestItem))
   localStorage.setItem(CWAData, JSON.stringify(this.CWAData))
-  // debugger;
   if (DEBUG) {
     console.log(` CACHE SAVE DATA: \n Latest: ${this.cacheGetLatestItem()}
         \nALL: ${localStorage.getItem(CWAData).length}

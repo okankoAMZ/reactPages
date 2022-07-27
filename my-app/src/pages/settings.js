@@ -36,9 +36,6 @@ export default function Setting(props) {
                 )
             }
             inputType = <select onChange={event => {
-                // setDefaultValue(event.target.value)
-                // debugger;
-                console.log(event.target.value, typeof (event.target.value))
                 saveSetting(key, event.target.value)
                 if (props.page !== undefined) {
                     props.page.updateConfig()
@@ -48,9 +45,6 @@ export default function Setting(props) {
         }
         default: {
             inputType = <input type={props.type} onChange={event => {
-                // setDefaultValue(event.target.value)
-                console.log(event.target.value, typeof (event.target.value))
-                // saveSetting(key,event.target.value)
                 if (props.onSave === undefined) {
                     saveSetting(key, event.target.value)
                 } else {
@@ -89,7 +83,6 @@ export function MetricSettingsBox(props) {
                 settingKey={`${settingKey}`}
                 onSave={(key, value) => {
                     defaultValue[metric][key] = parseFloat(value)
-                    // debugger
                     saveSetting(METRIC_CONFIG_KEY, defaultValue)
                     if (props.page !== undefined) {
                         props.page.updateConfig()

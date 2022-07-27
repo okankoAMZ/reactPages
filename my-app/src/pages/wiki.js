@@ -102,7 +102,12 @@ export default class WikiPage extends Page {
                                 <h3>Test Environment</h3>
                                 <p>
                                     The performance test is run on an AL2 EC2 instance and the agent resources are monitored via the procstat plugin for
-                                    CloudWatch Agent. The resource usage data is automatically uploaded to CloudWatch by the agent where it is pulled
+                                    CloudWatch Agent. When the agent is installed on the EC2 instance, a config file is generated for the agent to use. The config
+                                    file contains an entry for procstat that the agent uses to gather metrics on itself. The config also contains a 
+                                    dynamically generated number of log files that the agent will monitor. When the agent starts, lines are written to each log
+                                    file at the rate specified for the given test (TPS).
+                                    <br></br>
+                                    The resource usage data is automatically uploaded to CloudWatch by the agent where it is pulled
                                     via an API request from the integration test. The integration test processes the data and then stores it in the database.
                                 </p>
                             </Section>

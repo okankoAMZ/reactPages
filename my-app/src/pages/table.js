@@ -38,7 +38,7 @@ export default class TablePage extends Page {
                         </div>
                         <TableGroup data={this.state.data} config={this.state.config} />
                     </div>
-                    <div class="table_settings" onChange={console.log("changed")}>
+                    <div class="table_settings">
                         <div class="settings_page">
                             <div class="title">
                                 <h2>Settings</h2>
