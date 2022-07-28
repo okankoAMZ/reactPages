@@ -22,7 +22,7 @@ class Receiver {
     var date = new Date()
     this.year = date.getFullYear()
     let cacheLatestItem = this.cacheGetLatestItem()
-    if (cacheLatestItem != undefined) {
+    if (cacheLatestItem !== undefined) {
       this.CWAData = this.cacheGetAllData()
       this.latestItem = cacheLatestItem
     }
@@ -39,7 +39,7 @@ class Receiver {
       // ask dynamo what is the lastest hash it received 
       let cacheLatestItem = this.cacheGetLatestItem()//["Hash"].S //rename to lastest hash
       let cacheLatestHash = ""
-      if (cacheLatestItem == undefined) {
+      if (cacheLatestItem === null) {
         console.log("NO cache found", localStorage.key(0), localStorage.key(1))
         // no cache found, pull every thing and set
         this.CWAData = await this.getAllItems()
@@ -49,9 +49,10 @@ class Receiver {
         return
       } else {
         cacheLatestHash = cacheLatestItem["Hash"]
-        this.CWAData = this.cacheGetAllData()
+        this.CWAData = this.cacheGetAllData()  
       }
-      if (DynamoHash == cacheLatestHash) {
+      
+      if (DynamoHash === cacheLatestHash) {
         console.log("synced") // synced up
       } else if (parseInt(dynamoLatestItem["CommitDate"]) >= parseInt(cacheLatestItem["CommitDate"])) {
         /// if hashes dont match call getBatchItem with local hash and update local hash with new data
@@ -59,13 +60,13 @@ class Receiver {
         var newItems = await this.getBatchItem(cacheLatestItem["CommitDate"], dynamoLatestItem["CommitDate"])
         console.log(this.CWAData, newItems)
         Object.keys(newItems).forEach((key)=>{
-          if(this.CWAData[key]== undefined){
+          if(this.CWAData[key]=== undefined){
             // new testCase
             this.CWAData[key]={}
           }
           //already have this testCase
           Object.keys(this.CWAData[key]).forEach((metric)=>{
-            if(this.CWAData[key][metric]== undefined){
+            if(this.CWAData[key][metric] === undefined){
               // new metric
               this.CWAData[key][metric] = []
             }
@@ -80,7 +81,7 @@ class Receiver {
     catch (err) {
       console.log(`ERROR:${err}`)
       alert(`ERROR:${err}`)
-      if (this.cacheGetLatestItem == undefined) {
+      if (this.cacheGetLatestItem === undefined) {
         return {}
       }
       return this.cacheGetAllData()
@@ -188,16 +189,16 @@ class Receiver {
     data.forEach((item) => {
       var cleanData = AWS.DynamoDB.Converter.unmarshall(item)
       Object.keys(cleanData["Results"]).forEach(testCase => {
-        if (formattedData[testCase] == undefined) {
+        if (formattedData[testCase] === undefined) {
           formattedData[testCase] = {}
         }
         Object.keys(cleanData["Results"][testCase]).forEach(metric=>{
-          if (formattedData[testCase][metric] == undefined) {
+          if (formattedData[testCase][metric] === undefined) {
             formattedData[testCase][metric] = []
           }
           var newStructure = cleanData["Results"][testCase][metric]
           GENERAL_ATTRIBUTES.forEach((generalAttribute) => {
-            if (generalAttribute == "Hash") {
+            if (generalAttribute === "Hash") {
               if (cleanData[generalAttribute].length > 7) {
                 newStructure[generalAttribute] = cleanData[generalAttribute].substring(0, 7)
                 newStructure[LINK] = `${REPO_LINK}/commit/${cleanData[generalAttribute]}`

@@ -1,8 +1,9 @@
 import './settings.css'
-import {MetricConfigs,TEST_VARIABLES } from "../config"
+import {MetricConfigs } from "../config"
+//,TEST_VARIABLES
 const CONFIG = "config"
 const METRIC_CONFIG_KEY = "metricConfig"
-const TABLE_CONFIG_KEY = "tableConfig"
+//const TABLE_CONFIG_KEY = "tableConfig"
 
 function loadSetting(settingTag) {
     var config = JSON.parse(localStorage.getItem(CONFIG))
@@ -27,7 +28,12 @@ export default function Setting(props) {
     var inputType = <input type="text" />
     switch (props.type) {
         case "select": {
-            if (props.range === undefined) { throw "Select requires a range like : [start,end,interval,unit]" }
+            if (props.range === undefined) { 
+                throw Object.assign(
+                new Error("Select requires a range like : [start,end,interval,unit]"),
+                {code: 400}
+                );  
+            }
             var options = []
             for (var i = props.range[0]; i < props.range[1]; i = i + props.range[2]) {
                 options.push(

@@ -6,9 +6,9 @@ import Home from "./pages/home"
 import TablePage from './pages/table'
 import SettingsPage from './pages/settings'
 import WikiPage from "./pages/wiki"
-import { HashRouter,BrowserRouter,Route,Routes,Navigate } from "react-router-dom";
+import { HashRouter,Route,Routes } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
-
+//BrowserRouter,,Navigate
 const root = ReactDOM.createRoot(document.getElementById('root'));
 //This is where we setup our root component and the routes for the website
 

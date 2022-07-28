@@ -15,7 +15,7 @@ export default class Home extends Page {
                     <h3>About CloudWatch Agent Performance Tracking</h3>
                     <p>
                         The <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Install-CloudWatch-Agent.html"
-                            target="_blank">CloudWatch Agent</a> performance tracker provides
+                            target="_blank" rel="noreferrer">CloudWatch Agent</a> performance tracker provides
                         data on the resource usage of the CloudWatch Agent.
                         It is currently designed and configured to be run on
                         Amazon Linux on an EC2 instance. The aim of this tracker is to
@@ -38,7 +38,7 @@ export default class Home extends Page {
                         Read our FAQ below
                         <div><br></br></div>
                         Need further assistance? Let us know about your issue 
-                        by opening an issue on github: <a href="https://github.com/aws/amazon-cloudwatch-agent/issues/new/choose" target="_blank">here</a>
+                        by opening an issue on github: <a href="https://github.com/aws/amazon-cloudwatch-agent/issues/new/choose" target="_blank" rel="noreferrer">here</a>
                         <div>
                             <br></br>
                         </div>
@@ -55,7 +55,7 @@ export default class Home extends Page {
                         to run under a given load.
                         <div><br></br></div>
                         Currently, the performance benchmarking collects the CloudWatch Agent's CPU usage 
-                        and <a href="https://en.wikipedia.org/wiki/Resident_set_size" target="_blank">Resident Set Size (RSS) memory</a>.
+                        and <a href="https://en.wikipedia.org/wiki/Resident_set_size" target="_blank" rel="noreferrer">Resident Set Size (RSS) memory</a>.
                     </p>
                 </section>
                 <section style={{"margin-bottom": "3%"}}>

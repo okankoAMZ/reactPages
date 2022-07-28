@@ -109,21 +109,21 @@ function CreateRow(props, sigfig, currentTestCase, index, rowLength) {
 
     var currEntry = currMetric[index]
 
-    line.push(<TableCell class="cell_text"><a href={currEntry["Link"]} target="_blank">
+    line.push(<TableCell class="cell_text"><a href={currEntry["Link"]} target="_blank" rel="noreferrer">
         {currEntry["Hash"]}</a></TableCell>);
 
     var date = new Date(currEntry["CommitDate"] * 1000)
     line.push(<TableCell class="cell_text">{date.toUTCString()}</TableCell>);
 
-    if (currentTestCase.split("-")[1] == "all") {
+    if (currentTestCase.split("-")[1] === "all") {
         let testCaseList = Object.keys(props.data)
         let selectedLogNum = currentTestCase.split("-")[0]
         for (let i = 0; i < testCaseList.length; i++) {
             let testCaseOption = testCaseList[i].split("-")
-            if (testCaseOption[0] == selectedLogNum) {
+            if (testCaseOption[0] === selectedLogNum) {
                 let testMetric = props.data[testCaseList[i]][props.metric]
                 for (let metric in testMetric[index]) {
-                    if (IGNORE_ATTRIBUTES.includes(metric) || metric == "Period") {
+                    if (IGNORE_ATTRIBUTES.includes(metric) || metric === "Period") {
                         continue;
                     }
                     line.push(<TableCell class="cell_text">{testMetric[index][metric].toPrecision(sigfig)}</TableCell>)
@@ -134,7 +134,7 @@ function CreateRow(props, sigfig, currentTestCase, index, rowLength) {
         let testMetric = props.data[currentTestCase][props.metric]
         //add line with contained data
         for (let metric in testMetric[index]) {
-            if (IGNORE_ATTRIBUTES.includes(metric) || metric == "Period") {
+            if (IGNORE_ATTRIBUTES.includes(metric) || metric === "Period") {
                 continue;
             }
             line.push(<TableCell class="cell_text">{testMetric[index][metric].toPrecision(sigfig)}</TableCell>)
@@ -200,16 +200,15 @@ export function BasicTable(props) {
     testVariables.forEach((varSet, i) => {
 
         var options = []
-        {
-            varSet.forEach((value) => {
-                options.push(<option>{value}</option>)
-            })
 
-            if (TEST_VARIABLES[i] == "TPS") {
-                options.push(<option>all</option>)
-            }
+        varSet.forEach((value) => {
+            options.push(<option>{value}</option>)
+        })
+
+        if (TEST_VARIABLES[i] === "TPS") {
+            options.push(<option>all</option>)
         }
-        var id = `testCase-${props.title}-${i}`
+
         buttons.push(
             <div class="select_box">
                 <label>{TEST_VARIABLES[i]}</label>
@@ -229,11 +228,11 @@ export function BasicTable(props) {
             </div>)
     })
 
-    var columnHeaders = currentTestCase.split("-")[1] == "all" ? 3 : 1
+    var columnHeaders = currentTestCase.split("-")[1] === "all" ? 3 : 1
     for (let i = 0; i < columnHeaders; i++) {
         for (var metric in currMetric[0]) {
 
-            if (IGNORE_ATTRIBUTES.includes(metric) || metric == "Period") {
+            if (IGNORE_ATTRIBUTES.includes(metric) || metric === "Period") {
                 continue;
             }
 
@@ -241,13 +240,11 @@ export function BasicTable(props) {
         }
     }
 
-    var labelHeaderClass = columnHeaders == 3 ? "table_labels" : "table_labels_hidden"
+    var labelHeaderClass = columnHeaders === 3 ? "table_labels" : "table_labels_hidden"
 
     var rows = []
 
     for (let i = page * rowsPerPage; i < page * rowsPerPage + rowsPerPage; i++) {
-        var testMetrics = props.data[Object.keys(props.data)[0]]
-        var currMetric = testMetrics[props.metric]
         if (i >= currMetric.length) {
             break
         }

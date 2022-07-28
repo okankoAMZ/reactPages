@@ -103,9 +103,9 @@ export function Graph(props){
     }
     testVariables.forEach((varSet,i)=>{
         var options = []
-        {varSet.forEach((value)=>{
+        varSet.forEach((value)=>{
             options.push(<option>{value}</option>)
-        })}
+        })
         var id = `testCase-${props.title}-${i}`
         buttons.push(
         <div class="select_box">
@@ -133,7 +133,7 @@ export function Graph(props){
         }
     })
     var size = parseInt(props.config.graphSize)
-    
+
     return (
         <div class="graph">
             <div class="button_container">

@@ -3,7 +3,7 @@ import React from 'react';
 import "./nav.css"
 import {FaHome,FaTable,FaChartLine, FaBookOpen} from "react-icons/fa"
 
-import {AiFillSetting} from 'react-icons/ai'
+//import {AiFillSetting} from 'react-icons/ai'
 import logo from '../icons/inverselogo.png'
 // This component handles navigation between page components.
 export default function Navbar(){
@@ -11,7 +11,7 @@ export default function Navbar(){
         <div class="navbar">
             <ul>
                 <li>
-                    <img src={logo} class="logo"/>
+                    <img src={logo} class="logo" alt="CloudWatch logo"/>
                 </li>
                 <li>
                     <Link to="/"><FaHome/>Home</Link>
