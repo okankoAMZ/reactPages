@@ -7,23 +7,7 @@ import "../helpers/table.css";
 //This the webpage that contains the metric tables.
 export default class TablePage extends Page {
   render() {
-    document.body.style.setProperty(
-      "--tableFontSize",
-      parseInt(this.state.config.tableFontSize).toString() + "px"
-    );
-    document.body.style.setProperty(
-      "--headTableFontSize",
-      (parseInt(this.state.config.tablefontSize) + 4).toString() + "px"
-    );
-    document.body.style.setProperty(
-      "--textFontSize",
-      parseInt(this.state.config.textFontSize).toString() + "px"
-    );
-    document.body.style.setProperty(
-      "--headTextFontSize",
-      (parseInt(this.state.config.textFontSize) + 4).toString() + "px"
-    );
-
+    super.render();
     return (
       <div className="table_page">
         <Navbar />

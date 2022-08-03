@@ -7,16 +7,7 @@ import { BsFillCircleFill, BsSuitDiamondFill } from "react-icons/bs";
 //This webpage displays metrics graphs relative to the hashes
 export default class GraphicsPage extends Page {
   render() {
-    console.log("Loading graphs");
-    document.body.style.setProperty(
-      "--textFontSize",
-      parseInt(this.state.config.textFontSize).toString() + "px"
-    );
-    document.body.style.setProperty(
-      "--headTextFontSize",
-      (parseInt(this.state.config.textFontSize) + 4).toString() + "px"
-    );
-
+    super.render();
     return (
       <div className="GraphicsPage">
         <Navbar />
@@ -109,9 +100,6 @@ export default class GraphicsPage extends Page {
                   range={[10, 50, 5, " commits"]}
                   page={this}
                 />
-                {/* <Setting title="Range-Min"/>
-                      <Setting title="Range-Max"/> */}
-                {/* <Setting title="Table Font Size" settingKey="tableFontSize" type="select" range={[8,32,4,'px']}/> */}
               </div>
               <br></br>
               <MetricSettingsBox data={this.state.data} page={this} />

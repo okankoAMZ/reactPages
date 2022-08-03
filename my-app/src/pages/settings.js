@@ -1,9 +1,7 @@
 import "./settings.css";
 import { MetricConfigs } from "../config";
-//,TEST_VARIABLES
 const CONFIG = "config";
 const METRIC_CONFIG_KEY = "metricConfig";
-//const TABLE_CONFIG_KEY = "tableConfig"
 
 function loadSetting(settingTag) {
   var config = JSON.parse(localStorage.getItem(CONFIG));
@@ -18,13 +16,11 @@ function saveSetting(settingTag, value) {
     config = {};
   }
   config[settingTag] = value;
-  // debugger;
   localStorage.setItem(CONFIG, JSON.stringify(config));
 }
 export default function Setting(props) {
   var key = props.settingKey || props.title;
   var defaultValue = props.defaultValue || loadSetting(key);
-  // const [defaultValue,setDefaultValue] = useState(prevValue)
   var inputType = <input type="text" />;
   switch (props.type) {
     case "select": {

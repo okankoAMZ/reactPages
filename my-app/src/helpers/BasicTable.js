@@ -19,7 +19,6 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import "./table.css";
 import { IGNORE_ATTRIBUTES, UNITS, TEST_VARIABLES } from "../config";
-//@TODO ADD UNITS TO TABLE HEADERS
 const MIN_COLOUR = 0x50;
 
 function getRandomColour(idx) {
@@ -274,7 +273,13 @@ export function BasicTable(props) {
       break;
     }
 
-    let line = CreateRow(props, sigfig, currentTestCase, i, metricNames.length);
+    let line = CreateRow(
+      props,
+      sigfig,
+      currentTestCase,
+      currMetric.length - i - 1,
+      metricNames.length
+    );
 
     if (currMetric[i].isRelease) {
       rows.push(<TableRow style={{ background: "#896799" }}>{line}</TableRow>);
